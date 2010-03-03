@@ -132,8 +132,13 @@ class PackerTest < Test::Unit::TestCase
     assert_equal(io.string, @module.pack(sio, array).string)
   end
 
-  def test_pack__array32
-    # TODO:
+  def test_pack__array32_min
+    io = StringIO.new("\xDD\x00\x01\x00\x00", "a+")
+    array = 0x00010000.times.map { |i|
+      @module.pack(io, i)
+      i
+    }
+    assert_equal(io.string, @module.pack(sio, array).string)
   end
 
   def test_pack__fixmap

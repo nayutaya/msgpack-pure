@@ -99,6 +99,16 @@ class UnpackerTest < Test::Unit::TestCase
     assert_equal([0] * 15, @module.unpack(StringIO.new("\x9F" + "\x00" * 15)))
   end
 
+  def test_array16
+    assert_equal([],  @module.unpack(StringIO.new("\xDC\x00\x00")))
+    assert_equal([0], @module.unpack(StringIO.new("\xDC\x00\x01\x00")))
+  end
+
+  def test_array32
+    assert_equal([],  @module.unpack(StringIO.new("\xDD\x00\x00\x00\x00")))
+    assert_equal([0], @module.unpack(StringIO.new("\xDD\x00\x00\x00\x01\x00")))
+  end
+
   def test_ok
     assert true
   end

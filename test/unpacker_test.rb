@@ -11,64 +11,64 @@ class UnpackerTest < Test::Unit::TestCase
   end
 
   def test_unpack__positive_fixnum
-    assert_equal(  0, unpack("\x00"))
-    assert_equal(127, unpack("\x7F"))
+    assert_equal(+0x00, unpack("\x00"))
+    assert_equal(+0x7F, unpack("\x7F"))
   end
 
   def test_unpack__negative_fixnum
-    assert_equal( -1, unpack("\xFF"))
-    assert_equal(-32, unpack("\xE0"))
+    assert_equal(-0x01, unpack("\xFF"))
+    assert_equal(-0x20, unpack("\xE0"))
   end
 
   def test_unpack__uint8
-    assert_equal(0,    unpack("\xCC\x00"))
-    assert_equal(0xFF, unpack("\xCC\xFF"))
+    assert_equal(+0x00, unpack("\xCC\x00"))
+    assert_equal(+0xFF, unpack("\xCC\xFF"))
   end
 
   def test_unpack__uint16
-    assert_equal(0x0000, unpack("\xCD\x00\x00"))
-    assert_equal(0x0001, unpack("\xCD\x00\x01"))
-    assert_equal(0xFFFF, unpack("\xCD\xFF\xFF"))
+    assert_equal(+0x0000, unpack("\xCD\x00\x00"))
+    assert_equal(+0x0001, unpack("\xCD\x00\x01"))
+    assert_equal(+0xFFFF, unpack("\xCD\xFF\xFF"))
   end
 
   def test_unpack__uint32
-    assert_equal(0x00000000, unpack("\xCE\x00\x00\x00\x00"))
-    assert_equal(0x00000001, unpack("\xCE\x00\x00\x00\x01"))
-    assert_equal(0xFFFFFFFF, unpack("\xCE\xFF\xFF\xFF\xFF"))
+    assert_equal(+0x00000000, unpack("\xCE\x00\x00\x00\x00"))
+    assert_equal(+0x00000001, unpack("\xCE\x00\x00\x00\x01"))
+    assert_equal(+0xFFFFFFFF, unpack("\xCE\xFF\xFF\xFF\xFF"))
   end
 
   def test_unpack__uint64
-    assert_equal(0x0000000000000000, unpack("\xCF\x00\x00\x00\x00\x00\x00\x00\x00"))
-    assert_equal(0x0000000000000001, unpack("\xCF\x00\x00\x00\x00\x00\x00\x00\x01"))
-    assert_equal(0xFFFFFFFFFFFFFFFF, unpack("\xCF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF"))
+    assert_equal(+0x0000000000000000, unpack("\xCF\x00\x00\x00\x00\x00\x00\x00\x00"))
+    assert_equal(+0x0000000000000001, unpack("\xCF\x00\x00\x00\x00\x00\x00\x00\x01"))
+    assert_equal(+0xFFFFFFFFFFFFFFFF, unpack("\xCF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF"))
   end
 
   def test_unpack__int8
-    assert_equal(0,          unpack("\xD0\x00"))
-    assert_equal(2 ** 7 - 1, unpack("\xD0\x7F"))
-    assert_equal(-1,         unpack("\xD0\xFF"))
-    assert_equal(-(2 ** 7),  unpack("\xD0\x80"))
+    assert_equal(+0x00, unpack("\xD0\x00"))
+    assert_equal(+0x7F, unpack("\xD0\x7F"))
+    assert_equal(-0x01, unpack("\xD0\xFF"))
+    assert_equal(-0x80, unpack("\xD0\x80"))
   end
 
   def test_unpack__int16
-    assert_equal(0,           unpack("\xD1\x00\x00"))
-    assert_equal(2 ** 15 - 1, unpack("\xD1\x7F\xFF"))
-    assert_equal(-1,          unpack("\xD1\xFF\xFF"))
-    assert_equal(-(2 ** 15),  unpack("\xD1\x80\x00"))
+    assert_equal(+0x0000, unpack("\xD1\x00\x00"))
+    assert_equal(+0x7FFF, unpack("\xD1\x7F\xFF"))
+    assert_equal(-0x0001, unpack("\xD1\xFF\xFF"))
+    assert_equal(-0x8000, unpack("\xD1\x80\x00"))
   end
 
   def test_unpack__int32
-    assert_equal(0,           unpack("\xD2\x00\x00\x00\x00"))
-    assert_equal(2 ** 31 - 1, unpack("\xD2\x7F\xFF\xFF\xFF"))
-    assert_equal(-1,          unpack("\xD2\xFF\xFF\xFF\xFF"))
-    assert_equal(-(2 ** 31),  unpack("\xD2\x80\x00\x00\x00"))
+    assert_equal(+0x00000000, unpack("\xD2\x00\x00\x00\x00"))
+    assert_equal(+0x7FFFFFFF, unpack("\xD2\x7F\xFF\xFF\xFF"))
+    assert_equal(-0x00000001, unpack("\xD2\xFF\xFF\xFF\xFF"))
+    assert_equal(-0x80000000, unpack("\xD2\x80\x00\x00\x00"))
   end
 
   def test_unpack__int64
-    assert_equal(0,           unpack("\xD3\x00\x00\x00\x00\x00\x00\x00\x00"))
-    assert_equal(2 ** 63 - 1, unpack("\xD3\x7F\xFF\xFF\xFF\xFF\xFF\xFF\xFF"))
-    assert_equal(-1,          unpack("\xD3\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF"))
-    assert_equal(-(2 ** 63),  unpack("\xD3\x80\x00\x00\x00\x00\x00\x00\x00"))
+    assert_equal(+0x0000000000000000, unpack("\xD3\x00\x00\x00\x00\x00\x00\x00\x00"))
+    assert_equal(+0x7FFFFFFFFFFFFFFF, unpack("\xD3\x7F\xFF\xFF\xFF\xFF\xFF\xFF\xFF"))
+    assert_equal(-0x0000000000000001, unpack("\xD3\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF"))
+    assert_equal(-0x8000000000000000, unpack("\xD3\x80\x00\x00\x00\x00\x00\x00\x00"))
   end
 
   def test_unpack__nil
@@ -84,14 +84,14 @@ class UnpackerTest < Test::Unit::TestCase
   end
 
   def test_unpack__float
-    assert_equal(0.0,  unpack("\xCA\x00\x00\x00\x00"))
-    assert_equal(0.5,  unpack("\xCA\x3F\x00\x00\x00"))
+    assert_equal(+0.0, unpack("\xCA\x00\x00\x00\x00"))
+    assert_equal(+0.5, unpack("\xCA\x3F\x00\x00\x00"))
     assert_equal(-0.5, unpack("\xCA\xBF\x00\x00\x00"))
   end
 
   def test_unpack__double
-    assert_equal(0.0,  unpack("\xCB\x00\x00\x00\x00\x00\x00\x00\x00"))
-    assert_equal(0.5,  unpack("\xCB\x3F\xE0\x00\x00\x00\x00\x00\x00"))
+    assert_equal(+0.0, unpack("\xCB\x00\x00\x00\x00\x00\x00\x00\x00"))
+    assert_equal(+0.5, unpack("\xCB\x3F\xE0\x00\x00\x00\x00\x00\x00"))
     assert_equal(-0.5, unpack("\xCB\xBF\xE0\x00\x00\x00\x00\x00\x00"))
   end
 

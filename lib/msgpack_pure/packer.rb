@@ -9,22 +9,22 @@ module MessagePackPure
 end
 
 module MessagePackPure::Packer
-  def self.pack(io, value)
+  def self.write(io, value)
     case value
-    when Integer    then self.pack_integer(io, value)
-    when NilClass   then self.pack_nil(io)
-    when TrueClass  then self.pack_true(io)
-    when FalseClass then self.pack_false(io)
-    when Float      then self.pack_float(io, value)
-    when String     then self.pack_string(io, value)
-    when Array      then self.pack_array(io, value)
-    when Hash       then self.pack_hash(io, value)
+    when Integer    then self.write_integer(io, value)
+    when NilClass   then self.write_nil(io)
+    when TrueClass  then self.write_true(io)
+    when FalseClass then self.write_false(io)
+    when Float      then self.write_float(io, value)
+    when String     then self.write_string(io, value)
+    when Array      then self.write_array(io, value)
+    when Hash       then self.write_hash(io, value)
     else raise("unknown type")
     end
     return io
   end
 
-  def self.pack_integer(io, num)
+  def self.write_integer(io, num)
     case num
     when (-0x20..0x7F)
       # positive fixnum, negative fixnum
@@ -66,24 +66,24 @@ module MessagePackPure::Packer
     end
   end
 
-  def self.pack_nil(io)
+  def self.write_nil(io)
     io.write("\xC0")
   end
 
-  def self.pack_true(io)
+  def self.write_true(io)
     io.write("\xC3")
   end
 
-  def self.pack_false(io)
+  def self.write_false(io)
     io.write("\xC2")
   end
 
-  def self.pack_float(io, value)
+  def self.write_float(io, value)
     io.write("\xCB")
     io.write(self.pack_double(value))
   end
 
-  def self.pack_string(io, value)
+  def self.write_string(io, value)
     case value.size
     when (0x00..0x1F)
       # fixraw
@@ -104,7 +104,7 @@ module MessagePackPure::Packer
     end
   end
 
-  def self.pack_array(io, value)
+  def self.write_array(io, value)
     case value.size
     when (0x00..0x0F)
       # fixarray
@@ -122,11 +122,11 @@ module MessagePackPure::Packer
     end
 
     value.each { |item|
-      self.pack(io, item)
+      self.write(io, item)
     }
   end
 
-  def self.pack_hash(io, value)
+  def self.write_hash(io, value)
     case value.size
     when (0x00..0x0F)
       # fixmap
@@ -144,8 +144,8 @@ module MessagePackPure::Packer
     end
 
     value.sort_by { |key, value| key }.each { |key, value|
-      self.pack(io, key)
-      self.pack(io, value)
+      self.write(io, key)
+      self.write(io, value)
     }
   end
 

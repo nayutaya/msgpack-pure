@@ -17,13 +17,11 @@ module MessagePackPure::Unpacker
       return (type & 0b00011111) - 32
     end
 
-    if type == 0xCC # uint8
-      return io.read(1).unpack("C")[0]
-    elsif type == 0xCD # uint16
-      return io.read(2).unpack("n")[0]
-    end
-
     case type
+    when 0xCC # uint8
+      return io.read(1).unpack("C")[0]
+    when 0xCD # uint16
+      return io.read(2).unpack("n")[0]
     when 0xCE # uint32
       return io.read(4).unpack("N")[0]
     end

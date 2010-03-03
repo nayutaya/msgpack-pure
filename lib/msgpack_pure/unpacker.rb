@@ -50,14 +50,11 @@ module MessagePackPure::Unpacker
     when 0xD0 # int8
       return self.unpack_int8(io)
     when 0xD1 # int16
-      num = self.unpack_uint16(io)
-      return (num < 2 ** 15 ? num : num - (2 ** 16))
+      return self.unpack_int16(io)
     when 0xD2 # int32
-      num = self.unpack_uint32(io)
-      return (num < 2 ** 31 ? num : num - (2 ** 32))
+      return self.unpack_int32(io)
     when 0xD3 # int64
-      num = self.unpack_uint64(io)
-      return (num < 2 ** 63 ? num : num - (2 ** 64))
+      return self.unpack_int64(io)
     when 0xDA # raw16
       size = self.unpack_uint16(io)
       return io.read(size)
@@ -104,14 +101,29 @@ module MessagePackPure::Unpacker
     return io.read(2).unpack("n")[0]
   end
 
+  def self.unpack_int16(io)
+    num = self.unpack_uint16(io)
+    return (num < 2 ** 15 ? num : num - (2 ** 16))
+  end
+
   def self.unpack_uint32(io)
     return io.read(4).unpack("N")[0]
+  end
+
+  def self.unpack_int32(io)
+    num = self.unpack_uint32(io)
+    return (num < 2 ** 31 ? num : num - (2 ** 32))
   end
 
   def self.unpack_uint64(io)
     high = self.unpack_uint32(io)
     low  = self.unpack_uint32(io)
     return (high << 32) + low
+  end
+
+  def self.unpack_int64(io)
+    num = self.unpack_uint64(io)
+    return (num < 2 ** 63 ? num : num - (2 ** 64))
   end
 
   def self.unpack_float(io)

@@ -123,8 +123,7 @@ class UnpackerTest < Test::Unit::TestCase
 
     io = StringIO.new("\x9F", "a+")
     array = 15.times.map { |i|
-      io.write("\xCD") # uint16: i
-      io.write([i].pack("n"))
+      io.write("\xCD" + [i].pack("n")) # uint16: i
       i
     }
     io.rewind
@@ -137,8 +136,7 @@ class UnpackerTest < Test::Unit::TestCase
 
     io = StringIO.new("\xDC\xFF\xFF", "a+")
     array = 0xFFFF.times.map { |i|
-      io.write("\xCD") # uint16: i
-      io.write([i].pack("n"))
+      io.write("\xCD" + [i].pack("n")) # uint16: i
       i
     }
     io.rewind
@@ -151,8 +149,7 @@ class UnpackerTest < Test::Unit::TestCase
 
     io = StringIO.new("\xDD\x00\x01\x00\x00", "a+")
     array = 0x10000.times.map { |i|
-      io.write("\xCD") # uint16: i
-      io.write([i].pack("n"))
+      io.write("\xCD" + [i].pack("n")) # uint16: i
       i
     }
     io.rewind
@@ -167,9 +164,8 @@ class UnpackerTest < Test::Unit::TestCase
 
     io = StringIO.new("\x8F", "a+")
     hash = 15.times.inject({}) { |memo, i|
-      io.write("\xCD") # uint16: i
-      io.write([i].pack("n"))
-      io.write("\x00") # fixnum: 0
+      io.write("\xCD" + [i].pack("n")) # uint16: i
+      io.write("\x00")                 # fixnum: 0
       memo[i] = 0
       memo
     }
@@ -185,9 +181,8 @@ class UnpackerTest < Test::Unit::TestCase
 
     io = StringIO.new("\xDE\xFF\xFF", "a+")
     hash = 0xFFFF.times.inject({}) { |memo, i|
-      io.write("\xCD") # uint16: i
-      io.write([i].pack("n"))
-      io.write("\x00") # fixnum: 0
+      io.write("\xCD" + [i].pack("n")) # uint16: i
+      io.write("\x00")                 # fixnum: 0
       memo[i] = 0
       memo
     }
@@ -203,9 +198,8 @@ class UnpackerTest < Test::Unit::TestCase
 
     io = StringIO.new("\xDF\x00\x01\x00\x00", "a+")
     hash = 0x10000.times.inject({}) { |memo, i|
-      io.write("\xCD") # uint16: i
-      io.write([i].pack("n"))
-      io.write("\x00") # fixnum: 0
+      io.write("\xCD" + [i].pack("n")) # uint16: i
+      io.write("\x00")                 # fixnum: 0
       memo[i] = 0
       memo
     }

@@ -65,6 +65,24 @@ module MessagePackPure::Unpacker
     when 0xDD # array32
       size = io.read(4).unpack("N")[0]
       return size.times.map { unpack(io) }
+    when 0xDE # map16
+      size = io.read(2).unpack("n")[0]
+      hash = {}
+      size.times {
+        key = unpack(io)
+        value = unpack(io)
+        hash[key] = value
+      }
+      return hash
+    when 0xDF # map32
+      size = io.read(4).unpack("N")[0]
+      hash = {}
+      size.times {
+        key = unpack(io)
+        value = unpack(io)
+        hash[key] = value
+      }
+      return hash
     else
       raise("Unknown Type -- #{'0x%02X' % type}")
     end

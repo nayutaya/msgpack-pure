@@ -16,6 +16,16 @@ class PackerTest < Test::Unit::TestCase
     assert_equal("\x7F", @module.pack_fixnum(sio, 0x7F).string)
   end
 
+  def test_fixnum__negative_fixnum
+    assert_equal("\xFF", @module.pack_fixnum(sio, -0x01).string)
+    assert_equal("\xE0", @module.pack_fixnum(sio, -0x20).string)
+  end
+
+  def test_fixnum__uint8
+    assert_equal("\xCC\x80", @module.pack_fixnum(sio, 0x80).string)
+    assert_equal("\xCC\xFF", @module.pack_fixnum(sio, 0xFF).string)
+  end
+
   def test_pack_nil
     assert_equal("\xC0", @module.pack_nil(sio).string)
   end

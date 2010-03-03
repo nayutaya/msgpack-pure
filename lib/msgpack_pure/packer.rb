@@ -10,7 +10,13 @@ end
 
 module MessagePackPure::Packer
   def self.pack_fixnum(io, num)
-    io.write([num].pack("C"))
+    case num
+    when (-32..127)
+      io.write([num].pack("C"))
+    else
+      io.write("\xCC")
+      io.write([num].pack("C"))
+    end
     return io
   end
 

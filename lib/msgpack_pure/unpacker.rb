@@ -24,6 +24,8 @@ module MessagePackPure::Unpacker
       return false
     when 0xC3 # true
       return true
+    when 0xCB # double
+      return io.read(8).unpack("G")[0]
     when 0xCC # uint8
       return io.read(1).unpack("C")[0]
     when 0xCD # uint16

@@ -120,7 +120,16 @@ class UnpackerTest < Test::Unit::TestCase
   def test_unpack__fixarray
     assert_equal([],        unpack("\x90"))
     assert_equal([0, 1, 2], unpack("\x93\x00\x01\x02"))
-    assert_equal([0] * 15,  unpack("\x9F" + "\x00" * 15))
+
+    io = StringIO.new
+    io.write("\x9F")
+    array = 15.times.map { |i|
+      io.write("\xCD") # uint16: i
+      io.write([i].pack("n"))
+      i
+    }
+    io.rewind
+    assert_equal(array, @module.unpack(io))
   end
 
   def test_unpack__array16
@@ -158,6 +167,18 @@ class UnpackerTest < Test::Unit::TestCase
     assert_equal(
       {0 => 1, 2 => 3},
       unpack("\x82\x00\x01\x02\x03"))
+
+    io = StringIO.new
+    io.write("\x8F")
+    hash = 15.times.inject({}) { |memo, i|
+      io.write("\xCD") # uint16: i
+      io.write([i].pack("n"))
+      io.write("\x00") # fixnum: 0
+      memo[i] = 0
+      memo
+    }
+    io.rewind
+    assert_equal(hash, @module.unpack(io))
   end
 
   def test_unpack__map16

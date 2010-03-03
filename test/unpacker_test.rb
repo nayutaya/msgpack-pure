@@ -95,19 +95,25 @@ class UnpackerTest < Test::Unit::TestCase
   end
 
   def test_fixraw
-    assert_equal("",          @module.unpack(StringIO.new("\xA0")))
-    assert_equal("\x00",      @module.unpack(StringIO.new("\xA1\x00")))
-    assert_equal("\x00" * 31, @module.unpack(StringIO.new("\xBF" + "\x00" * 31)))
+    assert_equal("",       @module.unpack(StringIO.new("\xA0")))
+    assert_equal("A",      @module.unpack(StringIO.new("\xA1A")))
+    assert_equal("A" * 31, @module.unpack(StringIO.new("\xBF" + "A" * 31)))
   end
 
   def test_raw16
     assert_equal("",  @module.unpack(StringIO.new("\xDA\x00\x00")))
     assert_equal("A", @module.unpack(StringIO.new("\xDA\x00\x01A")))
+    assert_equal(
+      "A" * (2 ** 16 - 1),
+      @module.unpack(StringIO.new("\xDA\xFF\xFF" + "A" * (2 ** 16 - 1))))
   end
 
   def test_raw32
     assert_equal("",  @module.unpack(StringIO.new("\xDB\x00\x00\x00\x00")))
     assert_equal("A", @module.unpack(StringIO.new("\xDB\x00\x00\x00\x01A")))
+    assert_equal(
+      "A" * (2 ** 17 - 1),
+      @module.unpack(StringIO.new("\xDB\x00\x01\xFF\xFF" + "A" * (2 ** 17 - 1))))
   end
 
   def test_fixarray
@@ -119,11 +125,17 @@ class UnpackerTest < Test::Unit::TestCase
   def test_array16
     assert_equal([],  @module.unpack(StringIO.new("\xDC\x00\x00")))
     assert_equal([0], @module.unpack(StringIO.new("\xDC\x00\x01\x00")))
+    assert_equal(
+      [0] * (2 ** 16 - 1),
+      @module.unpack(StringIO.new("\xDC\xFF\xFF" + "\x00" * (2 ** 16 - 1))))
   end
 
   def test_array32
     assert_equal([],  @module.unpack(StringIO.new("\xDD\x00\x00\x00\x00")))
     assert_equal([0], @module.unpack(StringIO.new("\xDD\x00\x00\x00\x01\x00")))
+    assert_equal(
+      [0] * (2 ** 17 - 1),
+      @module.unpack(StringIO.new("\xDD\x00\x01\xFF\xFF" + "\x00" * (2 ** 17 - 1))))
   end
 
   def test_fixmap

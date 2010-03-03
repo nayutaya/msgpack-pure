@@ -20,6 +20,10 @@ module MessagePackPure::Unpacker
     case type
     when 0xC0 # nil
       return nil
+    when 0xC2 # false
+      return false
+    when 0xC3 # true
+      return true
     when 0xCC # uint8
       return io.read(1).unpack("C")[0]
     when 0xCD # uint16

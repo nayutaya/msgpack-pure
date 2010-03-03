@@ -44,8 +44,28 @@ class UnpackerTest < Test::Unit::TestCase
     assert_equal(-128, @module.unpack(StringIO.new("\xD0\x80")))
   end
 
+  def test_int16
+    # TODO:
+  end
+
+  def test_int32
+    # TODO:
+  end
+
+  def test_int64
+    # TODO:
+  end
+
   def test_nil
     assert_equal(nil, @module.unpack(StringIO.new("\xC0")))
+  end
+
+  def test_true
+    assert_equal(true, @module.unpack(StringIO.new("\xC3")))
+  end
+
+  def test_false
+    assert_equal(false, @module.unpack(StringIO.new("\xC2")))
   end
 
   def test_ok

@@ -77,6 +77,12 @@ class UnpackerTest < Test::Unit::TestCase
     assert_equal(-0.5, @module.unpack(StringIO.new("\xCB\xBF\xE0\x00\x00\x00\x00\x00\x00")))
   end
 
+  def test_fixraw
+    assert_equal("",          @module.unpack(StringIO.new("\xA0")))
+    assert_equal("\x00",      @module.unpack(StringIO.new("\xA1\x00")))
+    assert_equal("\x00" * 31, @module.unpack(StringIO.new("\xBF" + "\x00" * 31)))
+  end
+
   def test_ok
     assert true
   end

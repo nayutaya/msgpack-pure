@@ -15,6 +15,9 @@ module MessagePackPure::Unpacker
       return type
     elsif (type & 0b11100000) == 0b11100000 # negative fixnum
       return (type & 0b00011111) - 32
+    elsif (type & 0b11100000) == 0b10100000 # fixraw
+      size = (type & 0b00011111)
+      return io.read(size)
     end
 
     case type

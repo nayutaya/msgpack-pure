@@ -19,24 +19,23 @@ class UnpackerTest < Test::Unit::TestCase
     assert_equal(-32, @module.unpack(StringIO.new("\xE0")))
   end
 
-  def test_unit8
+  def test_uint8
     assert_equal(128,        @module.unpack(StringIO.new("\xCC\x80")))
     assert_equal(2 ** 8 - 1, @module.unpack(StringIO.new("\xCC\xFF")))
   end
 
-  def test_unit16
+  def test_uint16
     assert_equal(2 ** 8,      @module.unpack(StringIO.new("\xCD\x01\x00")))
     assert_equal(2 ** 16 - 1, @module.unpack(StringIO.new("\xCD\xFF\xFF")))
   end
 
-  def test_unit32
+  def test_uint32
     assert_equal(2 ** 16,     @module.unpack(StringIO.new("\xCE\x00\x01\x00\x00")))
     assert_equal(2 ** 32 - 1, @module.unpack(StringIO.new("\xCE\xFF\xFF\xFF\xFF")))
   end
 
   def test_nil
-    io = StringIO.new("\xC0")
-    assert_equal(nil, @module.unpack(io))
+    assert_equal(nil, @module.unpack(StringIO.new("\xC0")))
   end
 
   def test_ok

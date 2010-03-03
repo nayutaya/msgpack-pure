@@ -17,6 +17,7 @@ module MessagePackPure::Packer
     when FalseClass then self.pack_false(io)
     when Float      then self.pack_float(io, value)
     when String     then self.pack_string(io, value)
+    when Array      then self.pack_array(io, value)
     end
     return io
   end
@@ -100,6 +101,14 @@ module MessagePackPure::Packer
       io.write(value)
     else
       raise("invalid length")
+    end
+  end
+
+  def self.pack_array(io, value)
+    case value.size
+    when (0x00..0x0F)
+      io.write([0b10010000 + value.size].pack("C"))
+      value.each { |item| self.pack(io, item) }
     end
   end
 end

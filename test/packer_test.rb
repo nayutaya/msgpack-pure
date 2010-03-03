@@ -102,6 +102,38 @@ class PackerTest < Test::Unit::TestCase
       @module.pack(sio, "A" * 0x00010000).string)
   end
 
+  def test_pack__fixarray
+    assert_equal("\x90",             @module.pack(sio, []).string)
+    assert_equal("\x93\x00\x01\x02", @module.pack(sio, [0, 1, 2]).string)
+
+    io = StringIO.new("\x9F", "a+")
+    array = 15.times.map { |i|
+      @module.pack(io, i)
+      i
+    }
+    assert_equal(io.string, @module.pack(sio, array).string)
+  end
+
+  def test_pack__array16
+    # TODO:
+  end
+
+  def test_pack__array32
+    # TODO:
+  end
+
+  def test_pack__fixmap
+    # TODO:
+  end
+
+  def test_pack__map16
+    # TODO:
+  end
+
+  def test_pack__map32
+    # TODO:
+  end
+
   private
 
   def sio

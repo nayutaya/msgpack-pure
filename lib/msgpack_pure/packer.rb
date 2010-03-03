@@ -49,6 +49,13 @@ module MessagePackPure::Packer
       io.write("\xCF")
       io.write([high].pack("N"))
       io.write([low].pack("N"))
+    when (-0x8000000000000000..0x7FFFFFFFFFFFFFFF)
+      num += (2 ** 64) if num < 0
+      high = (num >> 32)
+      low  = (num & 0xFFFFFFFF)
+      io.write("\xD3")
+      io.write([high].pack("N"))
+      io.write([low].pack("N"))
     else
       raise("invalid integer")
     end

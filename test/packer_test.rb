@@ -36,16 +36,16 @@ class PackerTest < Test::Unit::TestCase
     assert_equal("\xCE\xFF\xFF\xFF\xFF", @module.pack_fixnum(sio, 0xFFFFFFFF).string)
   end
 
-  def test_pack_nil
-    assert_equal("\xC0", @module.pack_nil(sio).string)
+  def test_pack__nil
+    assert_equal("\xC0", @module.pack(sio, nil).string)
   end
 
-  def test_pack_true
-    assert_equal("\xC3", @module.pack_true(sio).string)
+  def test_pack__true
+    assert_equal("\xC3", @module.pack(sio, true).string)
   end
 
-  def test_pack_false
-    assert_equal("\xC2", @module.pack_false(sio).string)
+  def test_pack__false
+    assert_equal("\xC2", @module.pack(sio, false).string)
   end
 
   private

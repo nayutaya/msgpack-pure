@@ -9,6 +9,15 @@ module MessagePackPure
 end
 
 module MessagePackPure::Packer
+  def self.pack(io, value)
+    case value
+    when NilClass   then self.pack_nil(io)
+    when TrueClass  then self.pack_true(io)
+    when FalseClass then self.pack_false(io)
+    end
+    return io
+  end
+
   def self.pack_fixnum(io, num)
     case num
     when (-32..127)

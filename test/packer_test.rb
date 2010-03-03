@@ -142,7 +142,19 @@ class PackerTest < Test::Unit::TestCase
   end
 
   def test_pack__fixmap
-    # TODO:
+    assert_equal("\x80",             @module.pack(sio, {}).string)
+    assert_equal(
+      "\x82\x00\x01\x02\x03",
+      @module.pack(sio, {0 => 1, 2 => 3}).string)
+
+    io = StringIO.new("\x8F", "a+")
+    hash = 0x0F.times.inject({}) { |memo, i|
+      @module.pack(io, i)
+      @module.pack(io, 0)
+      memo[i] = 0
+      memo
+    }
+    assert_equal(io.string, @module.pack(sio, hash).string)
   end
 
   def test_pack__map16

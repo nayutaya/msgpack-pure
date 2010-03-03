@@ -18,6 +18,8 @@ module MessagePackPure::Packer
     when Float      then self.pack_float(io, value)
     when String     then self.pack_string(io, value)
     when Array      then self.pack_array(io, value)
+    when Hash       then self.pack_hash(io, value)
+    else raise("unknown type")
     end
     return io
   end
@@ -117,6 +119,17 @@ module MessagePackPure::Packer
       io.write("\xDD")
       io.write([value.size].pack("N"))
       value.each { |item| self.pack(io, item) }
+    end
+  end
+
+  def self.pack_hash(io, value)
+    case value.size
+    when (0x00..0x0F)
+      io.write([0b10000000 + value.size].pack("C"))
+      value.sort_by { |key, value| key }.each { |key, value|
+        self.pack(io, key)
+        self.pack(io, value)
+      }
     end
   end
 end

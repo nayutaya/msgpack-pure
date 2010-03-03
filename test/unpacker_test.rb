@@ -97,56 +97,60 @@ class UnpackerTest < Test::Unit::TestCase
 
   def test_fixraw
     assert_equal("",       unpack("\xA0"))
-    assert_equal("A",      unpack("\xA1A"))
+    assert_equal("ABC",    unpack("\xA3ABC"))
     assert_equal("A" * 31, unpack("\xBF" + "A" * 31))
   end
 
   def test_raw16
-    assert_equal("",  unpack("\xDA\x00\x00"))
-    assert_equal("A", unpack("\xDA\x00\x01A"))
+    assert_equal("",    unpack("\xDA\x00\x00"))
+    assert_equal("ABC", unpack("\xDA\x00\x03ABC"))
     assert_equal(
       "A" * (2 ** 16 - 1),
       unpack("\xDA\xFF\xFF" + "A" * (2 ** 16 - 1)))
   end
 
   def test_raw32
-    assert_equal("",  unpack("\xDB\x00\x00\x00\x00"))
-    assert_equal("A", unpack("\xDB\x00\x00\x00\x01A"))
+    assert_equal("",    unpack("\xDB\x00\x00\x00\x00"))
+    assert_equal("ABC", unpack("\xDB\x00\x00\x00\x03ABC"))
     assert_equal(
       "A" * (2 ** 16),
       unpack("\xDB\x00\x01\x00\x00" + "A" * (2 ** 16)))
   end
 
   def test_fixarray
-    assert_equal([],       unpack("\x90"))
-    assert_equal([0],      unpack("\x91\x00"))
-    assert_equal([0] * 15, unpack("\x9F" + "\x00" * 15))
+    assert_equal([],        unpack("\x90"))
+    assert_equal([0, 1, 2], unpack("\x93\x00\x01\x02"))
+    assert_equal([0] * 15,  unpack("\x9F" + "\x00" * 15))
   end
 
   def test_array16
-    assert_equal([],  unpack("\xDC\x00\x00"))
-    assert_equal([0], unpack("\xDC\x00\x01\x00"))
+    assert_equal([],        unpack("\xDC\x00\x00"))
+    assert_equal([0, 1, 2], unpack("\xDC\x00\x03\x00\x01\x02"))
     assert_equal(
       [0] * (2 ** 16 - 1),
       unpack("\xDC\xFF\xFF" + "\x00" * (2 ** 16 - 1)))
   end
 
   def test_array32
-    assert_equal([],  unpack("\xDD\x00\x00\x00\x00"))
-    assert_equal([0], unpack("\xDD\x00\x00\x00\x01\x00"))
+    assert_equal([],        unpack("\xDD\x00\x00\x00\x00"))
+    assert_equal([0, 1, 2], unpack("\xDD\x00\x00\x00\x03\x00\x01\x02"))
     assert_equal(
       [0] * (2 ** 16),
       unpack("\xDD\x00\x01\x00\x00" + "\x00" * (2 ** 16)))
   end
 
   def test_fixmap
-    assert_equal({},       unpack("\x80"))
-    assert_equal({0 => 1}, unpack("\x81\x00\x01"))
+    assert_equal({}, unpack("\x80"))
+    assert_equal(
+      {0 => 1, 2 => 3},
+      unpack("\x82\x00\x01\x02\x03"))
   end
 
   def test_map16
-    assert_equal({},       unpack("\xDE\x00\x00"))
-    assert_equal({0 => 1}, unpack("\xDE\x00\x01\x00\x01"))
+    assert_equal({}, unpack("\xDE\x00\x00"))
+    assert_equal(
+      {0 => 1, 2 => 3},
+      unpack("\xDE\x00\x02\x00\x01\x02\x03"))
 
     hash = {}
     io   = StringIO.new
@@ -162,8 +166,10 @@ class UnpackerTest < Test::Unit::TestCase
   end
 
   def test_map32
-    assert_equal({},       unpack("\xDF\x00\x00\x00\x00"))
-    assert_equal({0 => 1}, unpack("\xDF\x00\x00\x00\x01\x00\x01"))
+    assert_equal({}, unpack("\xDF\x00\x00\x00\x00"))
+    assert_equal(
+      {0 => 1, 2 => 3},
+      unpack("\xDF\x00\x00\x00\x02\x00\x01\x02\x03"))
 
     hash = {}
     io   = StringIO.new

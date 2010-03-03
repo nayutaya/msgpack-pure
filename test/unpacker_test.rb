@@ -112,8 +112,8 @@ class UnpackerTest < Test::Unit::TestCase
     assert_equal("",  @module.unpack(StringIO.new("\xDB\x00\x00\x00\x00")))
     assert_equal("A", @module.unpack(StringIO.new("\xDB\x00\x00\x00\x01A")))
     assert_equal(
-      "A" * (2 ** 17 - 1),
-      @module.unpack(StringIO.new("\xDB\x00\x01\xFF\xFF" + "A" * (2 ** 17 - 1))))
+      "A" * (2 ** 16),
+      @module.unpack(StringIO.new("\xDB\x00\x01\x00\x00" + "A" * (2 ** 16))))
   end
 
   def test_fixarray
@@ -134,8 +134,8 @@ class UnpackerTest < Test::Unit::TestCase
     assert_equal([],  @module.unpack(StringIO.new("\xDD\x00\x00\x00\x00")))
     assert_equal([0], @module.unpack(StringIO.new("\xDD\x00\x00\x00\x01\x00")))
     assert_equal(
-      [0] * (2 ** 17 - 1),
-      @module.unpack(StringIO.new("\xDD\x00\x01\xFF\xFF" + "\x00" * (2 ** 17 - 1))))
+      [0] * (2 ** 16),
+      @module.unpack(StringIO.new("\xDD\x00\x01\x00\x00" + "\x00" * (2 ** 16))))
   end
 
   def test_fixmap
@@ -175,9 +175,5 @@ class UnpackerTest < Test::Unit::TestCase
     }
     io.rewind
     assert_equal(hash, @module.unpack(io))
-  end
-
-  def test_ok
-    assert true
   end
 end

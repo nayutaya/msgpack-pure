@@ -144,13 +144,24 @@ class UnpackerTest < Test::Unit::TestCase
   end
 
   def test_map16
-    assert_equal({}, @module.unpack(StringIO.new("\xDE\x00\x00")))
-    assert_equal({0 => 0}, @module.unpack(StringIO.new("\xDE\x00\x01\x00\x00")))
+    assert_equal({},       @module.unpack(StringIO.new("\xDE\x00\x00")))
+    assert_equal({0 => 1}, @module.unpack(StringIO.new("\xDE\x00\x01\x00\x01")))
+
+=begin
+    hash = {}
+    bin  = "\xDE\xFF\xFF"
+    (2 ** 16).times { |i|
+      hash[i] = 0
+      bin += "\xCD" + [i].pack("n")
+      bin += "\x00"
+    }
+    assert_equal(hash, @module.unpack(StringIO.new(bin)))
+=end
   end
 
   def test_map32
-    assert_equal({}, @module.unpack(StringIO.new("\xDF\x00\x00\x00\x00")))
-    assert_equal({0 => 0}, @module.unpack(StringIO.new("\xDF\x00\x00\x00\x01\x00\x00")))
+    assert_equal({},       @module.unpack(StringIO.new("\xDF\x00\x00\x00\x00")))
+    assert_equal({0 => 1}, @module.unpack(StringIO.new("\xDF\x00\x00\x00\x01\x00\x01")))
   end
 
   def test_ok

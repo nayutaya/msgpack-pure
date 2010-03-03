@@ -107,15 +107,29 @@ class PackerTest < Test::Unit::TestCase
     assert_equal("\x93\x00\x01\x02", @module.pack(sio, [0, 1, 2]).string)
 
     io = StringIO.new("\x9F", "a+")
-    array = 15.times.map { |i|
+    array = 0x0F.times.map { |i|
       @module.pack(io, i)
       i
     }
     assert_equal(io.string, @module.pack(sio, array).string)
   end
 
-  def test_pack__array16
-    # TODO:
+  def test_pack__array16_min
+    io = StringIO.new("\xDC\x00\x10", "a+")
+    array = 0x0010.times.map { |i|
+      @module.pack(io, i)
+      i
+    }
+    assert_equal(io.string, @module.pack(sio, array).string)
+  end
+
+  def test_pack__array16_max
+    io = StringIO.new("\xDC\xFF\xFF", "a+")
+    array = 0xFFFF.times.map { |i|
+      @module.pack(io, i)
+      i
+    }
+    assert_equal(io.string, @module.pack(sio, array).string)
   end
 
   def test_pack__array32

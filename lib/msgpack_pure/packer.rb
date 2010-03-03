@@ -109,6 +109,10 @@ module MessagePackPure::Packer
     when (0x00..0x0F)
       io.write([0b10010000 + value.size].pack("C"))
       value.each { |item| self.pack(io, item) }
+    when (0x0000..0xFFFF)
+      io.write("\xDC")
+      io.write([value.size].pack("n"))
+      value.each { |item| self.pack(io, item) }
     end
   end
 end

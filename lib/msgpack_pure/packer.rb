@@ -64,28 +64,23 @@ module MessagePackPure::Packer
     else
       raise("invalid integer")
     end
-    return io
   end
 
   def self.pack_nil(io)
     io.write("\xC0")
-    return io
   end
 
   def self.pack_true(io)
     io.write("\xC3")
-    return io
   end
 
   def self.pack_false(io)
     io.write("\xC2")
-    return io
   end
 
   def self.pack_float(io, value)
     io.write("\xCB")
     io.write([value].pack("G"))
-    return io
   end
 
   def self.pack_string(io, value)

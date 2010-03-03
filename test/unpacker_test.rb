@@ -34,6 +34,16 @@ class UnpackerTest < Test::Unit::TestCase
     assert_equal(2 ** 32 - 1, @module.unpack(StringIO.new("\xCE\xFF\xFF\xFF\xFF")))
   end
 
+  def test_uint64
+    assert_equal(2 ** 32,     @module.unpack(StringIO.new("\xCF\x00\x00\x00\x01\x00\x00\x00\x00")))
+    assert_equal(2 ** 64 - 1, @module.unpack(StringIO.new("\xCF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF")))
+  end
+
+  def test_int8
+    assert_equal(-33,  @module.unpack(StringIO.new("\xD0\xDF")))
+    assert_equal(-128, @module.unpack(StringIO.new("\xD0\x80")))
+  end
+
   def test_nil
     assert_equal(nil, @module.unpack(StringIO.new("\xC0")))
   end

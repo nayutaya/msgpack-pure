@@ -26,6 +26,12 @@ module MessagePackPure::Unpacker
       return io.read(2).unpack("n")[0]
     when 0xCE # uint32
       return io.read(4).unpack("N")[0]
+    when 0xCF # uint64
+      hi = io.read(4).unpack("N")[0]
+      lo = io.read(4).unpack("N")[0]
+      return (hi << 32) | lo
+    when 0xD0 # int8
+      return io.read(1).unpack("c")[0]
     else
       raise("Unknown Type -- #{'0x%02X' % type}")
     end

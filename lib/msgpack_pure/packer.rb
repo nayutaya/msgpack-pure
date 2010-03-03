@@ -9,6 +9,11 @@ module MessagePackPure
 end
 
 module MessagePackPure::Packer
+  def self.pack_fixnum(io, num)
+    io.write([num].pack("C"))
+    return io
+  end
+
   def self.pack_nil(io)
     io.write("\xC0")
     return io

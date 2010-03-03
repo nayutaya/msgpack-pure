@@ -118,18 +118,21 @@ module MessagePackPure::Packer
     when (0x00..0x0F)
       # fixarray
       io.write([0b10010000 + value.size].pack("C"))
-      value.each { |item| self.pack(io, item) }
     when (0x0000..0xFFFF)
       # array16
       io.write("\xDC")
       io.write([value.size].pack("n"))
-      value.each { |item| self.pack(io, item) }
     when (0x00000000..0xFFFFFFFF)
       # array32
       io.write("\xDD")
       io.write([value.size].pack("N"))
-      value.each { |item| self.pack(io, item) }
+    else
+      raise("invalid length")
     end
+
+    value.each { |item|
+      self.pack(io, item)
+    }
   end
 
   def self.pack_hash(io, value)
@@ -137,26 +140,21 @@ module MessagePackPure::Packer
     when (0x00..0x0F)
       # fixmap
       io.write([0b10000000 + value.size].pack("C"))
-      value.sort_by { |key, value| key }.each { |key, value|
-        self.pack(io, key)
-        self.pack(io, value)
-      }
     when (0x0000..0xFFFF)
       # map16
       io.write("\xDE")
       io.write([value.size].pack("n"))
-      value.sort_by { |key, value| key }.each { |key, value|
-        self.pack(io, key)
-        self.pack(io, value)
-      }
     when (0x00000000..0xFFFFFFFF)
       # map32
       io.write("\xDF")
       io.write([value.size].pack("N"))
-      value.sort_by { |key, value| key }.each { |key, value|
-        self.pack(io, key)
-        self.pack(io, value)
-      }
+    else
+      raise("invalid length")
     end
+
+    value.sort_by { |key, value| key }.each { |key, value|
+      self.pack(io, key)
+      self.pack(io, value)
+    }
   end
 end

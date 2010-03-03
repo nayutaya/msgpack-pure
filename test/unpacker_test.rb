@@ -10,116 +10,116 @@ class UnpackerTest < Test::Unit::TestCase
     @module = MessagePackPure::Unpacker
   end
 
-  def test_unpack__positive_fixnum
-    assert_equal(+0x00, unpack("\x00"))
-    assert_equal(+0x7F, unpack("\x7F"))
+  def test_read__positive_fixnum
+    assert_equal(+0x00, read("\x00"))
+    assert_equal(+0x7F, read("\x7F"))
   end
 
-  def test_unpack__negative_fixnum
-    assert_equal(-0x01, unpack("\xFF"))
-    assert_equal(-0x20, unpack("\xE0"))
+  def test_read__negative_fixnum
+    assert_equal(-0x01, read("\xFF"))
+    assert_equal(-0x20, read("\xE0"))
   end
 
-  def test_unpack__uint8
-    assert_equal(+0x00, unpack("\xCC\x00"))
-    assert_equal(+0xFF, unpack("\xCC\xFF"))
+  def test_read__uint8
+    assert_equal(+0x00, read("\xCC\x00"))
+    assert_equal(+0xFF, read("\xCC\xFF"))
   end
 
-  def test_unpack__uint16
-    assert_equal(+0x0000, unpack("\xCD\x00\x00"))
-    assert_equal(+0x0001, unpack("\xCD\x00\x01"))
-    assert_equal(+0xFFFF, unpack("\xCD\xFF\xFF"))
+  def test_read__uint16
+    assert_equal(+0x0000, read("\xCD\x00\x00"))
+    assert_equal(+0x0001, read("\xCD\x00\x01"))
+    assert_equal(+0xFFFF, read("\xCD\xFF\xFF"))
   end
 
-  def test_unpack__uint32
-    assert_equal(+0x00000000, unpack("\xCE\x00\x00\x00\x00"))
-    assert_equal(+0x00000001, unpack("\xCE\x00\x00\x00\x01"))
-    assert_equal(+0xFFFFFFFF, unpack("\xCE\xFF\xFF\xFF\xFF"))
+  def test_read__uint32
+    assert_equal(+0x00000000, read("\xCE\x00\x00\x00\x00"))
+    assert_equal(+0x00000001, read("\xCE\x00\x00\x00\x01"))
+    assert_equal(+0xFFFFFFFF, read("\xCE\xFF\xFF\xFF\xFF"))
   end
 
-  def test_unpack__uint64
-    assert_equal(+0x0000000000000000, unpack("\xCF\x00\x00\x00\x00\x00\x00\x00\x00"))
-    assert_equal(+0x0000000000000001, unpack("\xCF\x00\x00\x00\x00\x00\x00\x00\x01"))
-    assert_equal(+0xFFFFFFFFFFFFFFFF, unpack("\xCF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF"))
+  def test_read__uint64
+    assert_equal(+0x0000000000000000, read("\xCF\x00\x00\x00\x00\x00\x00\x00\x00"))
+    assert_equal(+0x0000000000000001, read("\xCF\x00\x00\x00\x00\x00\x00\x00\x01"))
+    assert_equal(+0xFFFFFFFFFFFFFFFF, read("\xCF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF"))
   end
 
-  def test_unpack__int8
-    assert_equal(+0x00, unpack("\xD0\x00"))
-    assert_equal(+0x7F, unpack("\xD0\x7F"))
-    assert_equal(-0x01, unpack("\xD0\xFF"))
-    assert_equal(-0x80, unpack("\xD0\x80"))
+  def test_read__int8
+    assert_equal(+0x00, read("\xD0\x00"))
+    assert_equal(+0x7F, read("\xD0\x7F"))
+    assert_equal(-0x01, read("\xD0\xFF"))
+    assert_equal(-0x80, read("\xD0\x80"))
   end
 
-  def test_unpack__int16
-    assert_equal(+0x0000, unpack("\xD1\x00\x00"))
-    assert_equal(+0x7FFF, unpack("\xD1\x7F\xFF"))
-    assert_equal(-0x0001, unpack("\xD1\xFF\xFF"))
-    assert_equal(-0x8000, unpack("\xD1\x80\x00"))
+  def test_read__int16
+    assert_equal(+0x0000, read("\xD1\x00\x00"))
+    assert_equal(+0x7FFF, read("\xD1\x7F\xFF"))
+    assert_equal(-0x0001, read("\xD1\xFF\xFF"))
+    assert_equal(-0x8000, read("\xD1\x80\x00"))
   end
 
-  def test_unpack__int32
-    assert_equal(+0x00000000, unpack("\xD2\x00\x00\x00\x00"))
-    assert_equal(+0x7FFFFFFF, unpack("\xD2\x7F\xFF\xFF\xFF"))
-    assert_equal(-0x00000001, unpack("\xD2\xFF\xFF\xFF\xFF"))
-    assert_equal(-0x80000000, unpack("\xD2\x80\x00\x00\x00"))
+  def test_read__int32
+    assert_equal(+0x00000000, read("\xD2\x00\x00\x00\x00"))
+    assert_equal(+0x7FFFFFFF, read("\xD2\x7F\xFF\xFF\xFF"))
+    assert_equal(-0x00000001, read("\xD2\xFF\xFF\xFF\xFF"))
+    assert_equal(-0x80000000, read("\xD2\x80\x00\x00\x00"))
   end
 
-  def test_unpack__int64
-    assert_equal(+0x0000000000000000, unpack("\xD3\x00\x00\x00\x00\x00\x00\x00\x00"))
-    assert_equal(+0x7FFFFFFFFFFFFFFF, unpack("\xD3\x7F\xFF\xFF\xFF\xFF\xFF\xFF\xFF"))
-    assert_equal(-0x0000000000000001, unpack("\xD3\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF"))
-    assert_equal(-0x8000000000000000, unpack("\xD3\x80\x00\x00\x00\x00\x00\x00\x00"))
+  def test_read__int64
+    assert_equal(+0x0000000000000000, read("\xD3\x00\x00\x00\x00\x00\x00\x00\x00"))
+    assert_equal(+0x7FFFFFFFFFFFFFFF, read("\xD3\x7F\xFF\xFF\xFF\xFF\xFF\xFF\xFF"))
+    assert_equal(-0x0000000000000001, read("\xD3\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF"))
+    assert_equal(-0x8000000000000000, read("\xD3\x80\x00\x00\x00\x00\x00\x00\x00"))
   end
 
-  def test_unpack__nil
-    assert_equal(nil, unpack("\xC0"))
+  def test_read__nil
+    assert_equal(nil, read("\xC0"))
   end
 
-  def test_unpack__true
-    assert_equal(true, unpack("\xC3"))
+  def test_read__true
+    assert_equal(true, read("\xC3"))
   end
 
-  def test_unpack__false
-    assert_equal(false, unpack("\xC2"))
+  def test_read__false
+    assert_equal(false, read("\xC2"))
   end
 
-  def test_unpack__float
-    assert_equal(+0.0, unpack("\xCA\x00\x00\x00\x00"))
-    assert_equal(+0.5, unpack("\xCA\x3F\x00\x00\x00"))
-    assert_equal(-0.5, unpack("\xCA\xBF\x00\x00\x00"))
+  def test_read__float
+    assert_equal(+0.0, read("\xCA\x00\x00\x00\x00"))
+    assert_equal(+0.5, read("\xCA\x3F\x00\x00\x00"))
+    assert_equal(-0.5, read("\xCA\xBF\x00\x00\x00"))
   end
 
-  def test_unpack__double
-    assert_equal(+0.0, unpack("\xCB\x00\x00\x00\x00\x00\x00\x00\x00"))
-    assert_equal(+0.5, unpack("\xCB\x3F\xE0\x00\x00\x00\x00\x00\x00"))
-    assert_equal(-0.5, unpack("\xCB\xBF\xE0\x00\x00\x00\x00\x00\x00"))
+  def test_read__double
+    assert_equal(+0.0, read("\xCB\x00\x00\x00\x00\x00\x00\x00\x00"))
+    assert_equal(+0.5, read("\xCB\x3F\xE0\x00\x00\x00\x00\x00\x00"))
+    assert_equal(-0.5, read("\xCB\xBF\xE0\x00\x00\x00\x00\x00\x00"))
   end
 
-  def test_unpack__fixraw
-    assert_equal("",       unpack("\xA0"))
-    assert_equal("ABC",    unpack("\xA3ABC"))
-    assert_equal("A" * 31, unpack("\xBF" + "A" * 31))
+  def test_read__fixraw
+    assert_equal("",       read("\xA0"))
+    assert_equal("ABC",    read("\xA3ABC"))
+    assert_equal("A" * 31, read("\xBF" + "A" * 31))
   end
 
-  def test_unpack__raw16
-    assert_equal("",    unpack("\xDA\x00\x00"))
-    assert_equal("ABC", unpack("\xDA\x00\x03ABC"))
+  def test_read__raw16
+    assert_equal("",    read("\xDA\x00\x00"))
+    assert_equal("ABC", read("\xDA\x00\x03ABC"))
     assert_equal(
       "A" * 0xFFFF,
-      unpack("\xDA\xFF\xFF" + "A" * 0xFFFF))
+      read("\xDA\xFF\xFF" + "A" * 0xFFFF))
   end
 
-  def test_unpack__raw32
-    assert_equal("",    unpack("\xDB\x00\x00\x00\x00"))
-    assert_equal("ABC", unpack("\xDB\x00\x00\x00\x03ABC"))
+  def test_read__raw32
+    assert_equal("",    read("\xDB\x00\x00\x00\x00"))
+    assert_equal("ABC", read("\xDB\x00\x00\x00\x03ABC"))
     assert_equal(
       "A" * 0x10000,
-      unpack("\xDB\x00\x01\x00\x00" + "A" * 0x10000))
+      read("\xDB\x00\x01\x00\x00" + "A" * 0x10000))
   end
 
-  def test_unpack__fixarray
-    assert_equal([],        unpack("\x90"))
-    assert_equal([0, 1, 2], unpack("\x93\x00\x01\x02"))
+  def test_read__fixarray
+    assert_equal([],        read("\x90"))
+    assert_equal([0, 1, 2], read("\x93\x00\x01\x02"))
 
     io = StringIO.new("\x9F", "a+")
     array = 15.times.map { |i|
@@ -127,12 +127,12 @@ class UnpackerTest < Test::Unit::TestCase
       i
     }
     io.rewind
-    assert_equal(array, @module.unpack(io))
+    assert_equal(array, @module.read(io))
   end
 
-  def test_unpack__array16
-    assert_equal([],        unpack("\xDC\x00\x00"))
-    assert_equal([0, 1, 2], unpack("\xDC\x00\x03\x00\x01\x02"))
+  def test_read__array16
+    assert_equal([],        read("\xDC\x00\x00"))
+    assert_equal([0, 1, 2], read("\xDC\x00\x03\x00\x01\x02"))
 
     io = StringIO.new("\xDC\xFF\xFF", "a+")
     array = 0xFFFF.times.map { |i|
@@ -140,12 +140,12 @@ class UnpackerTest < Test::Unit::TestCase
       i
     }
     io.rewind
-    assert_equal(array, @module.unpack(io))
+    assert_equal(array, @module.read(io))
   end
 
-  def test_unpack__array32
-    assert_equal([],        unpack("\xDD\x00\x00\x00\x00"))
-    assert_equal([0, 1, 2], unpack("\xDD\x00\x00\x00\x03\x00\x01\x02"))
+  def test_read__array32
+    assert_equal([],        read("\xDD\x00\x00\x00\x00"))
+    assert_equal([0, 1, 2], read("\xDD\x00\x00\x00\x03\x00\x01\x02"))
 
     io = StringIO.new("\xDD\x00\x01\x00\x00", "a+")
     array = 0x10000.times.map { |i|
@@ -153,14 +153,14 @@ class UnpackerTest < Test::Unit::TestCase
       i
     }
     io.rewind
-    assert_equal(array, @module.unpack(io))
+    assert_equal(array, @module.read(io))
   end
 
-  def test_unpack__fixmap
-    assert_equal({}, unpack("\x80"))
+  def test_read__fixmap
+    assert_equal({}, read("\x80"))
     assert_equal(
       {0 => 1, 2 => 3},
-      unpack("\x82\x00\x01\x02\x03"))
+      read("\x82\x00\x01\x02\x03"))
 
     io = StringIO.new("\x8F", "a+")
     hash = 15.times.inject({}) { |memo, i|
@@ -170,14 +170,14 @@ class UnpackerTest < Test::Unit::TestCase
       memo
     }
     io.rewind
-    assert_equal(hash, @module.unpack(io))
+    assert_equal(hash, @module.read(io))
   end
 
-  def test_unpack__map16
-    assert_equal({}, unpack("\xDE\x00\x00"))
+  def test_read__map16
+    assert_equal({}, read("\xDE\x00\x00"))
     assert_equal(
       {0 => 1, 2 => 3},
-      unpack("\xDE\x00\x02\x00\x01\x02\x03"))
+      read("\xDE\x00\x02\x00\x01\x02\x03"))
 
     io = StringIO.new("\xDE\xFF\xFF", "a+")
     hash = 0xFFFF.times.inject({}) { |memo, i|
@@ -187,14 +187,14 @@ class UnpackerTest < Test::Unit::TestCase
       memo
     }
     io.rewind
-    assert_equal(hash, @module.unpack(io))
+    assert_equal(hash, @module.read(io))
   end
 
-  def test_unpack__map32
-    assert_equal({}, unpack("\xDF\x00\x00\x00\x00"))
+  def test_read__map32
+    assert_equal({}, read("\xDF\x00\x00\x00\x00"))
     assert_equal(
       {0 => 1, 2 => 3},
-      unpack("\xDF\x00\x00\x00\x02\x00\x01\x02\x03"))
+      read("\xDF\x00\x00\x00\x02\x00\x01\x02\x03"))
 
     io = StringIO.new("\xDF\x00\x01\x00\x00", "a+")
     hash = 0x10000.times.inject({}) { |memo, i|
@@ -204,12 +204,12 @@ class UnpackerTest < Test::Unit::TestCase
       memo
     }
     io.rewind
-    assert_equal(hash, @module.unpack(io))
+    assert_equal(hash, @module.read(io))
   end
 
   private
 
-  def unpack(binary)
-    return @module.unpack(StringIO.new(binary, "r"))
+  def read(binary)
+    return @module.read(StringIO.new(binary, "r"))
   end
 end

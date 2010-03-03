@@ -9,7 +9,7 @@ module MessagePackPure
 end
 
 module MessagePackPure::Unpacker
-  def self.unpack(io)
+  def self.read(io)
     type = self.unpack_uint8(io)
 
     case
@@ -79,12 +79,12 @@ module MessagePackPure::Unpacker
   end
 
   def self.read_array(io, size)
-    return size.times.map { self.unpack(io) }
+    return size.times.map { self.read(io) }
   end
 
   def self.read_hash(io, size)
     return size.times.inject({}) { |memo,|
-      memo[self.unpack(io)] = self.unpack(io)
+      memo[self.read(io)] = self.read(io)
       memo
     }
   end

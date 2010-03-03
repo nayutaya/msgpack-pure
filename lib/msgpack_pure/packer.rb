@@ -13,9 +13,15 @@ module MessagePackPure::Packer
     case num
     when (-32..127)
       io.write([num].pack("C"))
-    else
+    when (0..0xFF)
       io.write("\xCC")
       io.write([num].pack("C"))
+    when (0..0xFFFF)
+      io.write("\xCD")
+      io.write([num].pack("n"))
+    else
+      io.write("\xCE")
+      io.write([num].pack("N"))
     end
     return io
   end

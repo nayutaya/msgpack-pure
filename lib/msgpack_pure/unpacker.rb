@@ -20,16 +20,10 @@ module MessagePackPure::Unpacker
       return io.read(size)
     elsif (type & 0b11110000) == 0b10010000 # fixarray
       size = (type & 0b00001111)
-      return size.times.map { unpack(io) }
+      return self.unpack_array(io, size)
     elsif (type & 0b11110000) == 0b10000000 # fixmap
       size = (type & 0b00001111)
-      hash = {}
-      size.times {
-        key = unpack(io)
-        value = unpack(io)
-        hash[key] = value
-      }
-      return hash
+      return self.unpack_hash(io, size)
     end
 
     case type
@@ -76,30 +70,29 @@ module MessagePackPure::Unpacker
       return io.read(size)
     when 0xDC # array16
       size = io.read(2).unpack("n")[0]
-      return size.times.map { unpack(io) }
+      return self.unpack_array(io, size)
     when 0xDD # array32
       size = io.read(4).unpack("N")[0]
-      return size.times.map { unpack(io) }
+      return self.unpack_array(io, size)
     when 0xDE # map16
       size = io.read(2).unpack("n")[0]
-      hash = {}
-      size.times {
-        key = unpack(io)
-        value = unpack(io)
-        hash[key] = value
-      }
-      return hash
+      return self.unpack_hash(io, size)
     when 0xDF # map32
       size = io.read(4).unpack("N")[0]
-      hash = {}
-      size.times {
-        key = unpack(io)
-        value = unpack(io)
-        hash[key] = value
-      }
-      return hash
+      return self.unpack_hash(io, size)
     else
       raise("Unknown Type -- #{'0x%02X' % type}")
     end
+  end
+
+  def self.unpack_array(io, size)
+    return size.times.map { unpack(io) }
+  end
+
+  def self.unpack_hash(io, size)
+    return size.times.inject({}) { |memo,|
+      memo[unpack(io)] = unpack(io)
+      memo
+    }
   end
 end

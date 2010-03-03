@@ -12,4 +12,8 @@ class CoreTest < Test::Unit::TestCase
   def test_pack
     assert_equal("\x00", @module.pack(0))
   end
+
+  def test_unpack
+    assert_equal(0, @module.unpack("\x00"))
+  end
 end

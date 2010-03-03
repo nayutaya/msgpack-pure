@@ -18,6 +18,9 @@ module MessagePackPure::Unpacker
     elsif (type & 0b11100000) == 0b10100000 # fixraw
       size = (type & 0b00011111)
       return io.read(size)
+    elsif (type & 0b11110000) == 0b10010000 # fixarray
+      size = (type & 0b00001111)
+      return size.times.map { unpack(io) }
     end
 
     case type

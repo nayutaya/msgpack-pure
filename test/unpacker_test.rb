@@ -93,6 +93,12 @@ class UnpackerTest < Test::Unit::TestCase
     assert_equal("A", @module.unpack(StringIO.new("\xDB\x00\x00\x00\x01A")))
   end
 
+  def test_fixarray
+    assert_equal([],       @module.unpack(StringIO.new("\x90")))
+    assert_equal([0],      @module.unpack(StringIO.new("\x91\x00")))
+    assert_equal([0] * 15, @module.unpack(StringIO.new("\x9F" + "\x00" * 15)))
+  end
+
   def test_ok
     assert true
   end

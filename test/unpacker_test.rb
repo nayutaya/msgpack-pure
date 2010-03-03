@@ -126,17 +126,33 @@ class UnpackerTest < Test::Unit::TestCase
   def test_unpack__array16
     assert_equal([],        unpack("\xDC\x00\x00"))
     assert_equal([0, 1, 2], unpack("\xDC\x00\x03\x00\x01\x02"))
-    assert_equal(
-      [0] * 0xFFFF,
-      unpack("\xDC\xFF\xFF" + "\x00" * 0xFFFF))
+
+    array = []
+    io    = StringIO.new
+    io.write("\xDC\xFF\xFF")
+    0xFFFF.times { |i|
+      array << i
+      io.write("\xCD") # uint16: i
+      io.write([i].pack("n"))
+    }
+    io.rewind
+    assert_equal(array, @module.unpack(io))
   end
 
   def test_unpack__array32
     assert_equal([],        unpack("\xDD\x00\x00\x00\x00"))
     assert_equal([0, 1, 2], unpack("\xDD\x00\x00\x00\x03\x00\x01\x02"))
-    assert_equal(
-      [0] * 0x10000,
-      unpack("\xDD\x00\x01\x00\x00" + "\x00" * 0x10000))
+
+    array = []
+    io    = StringIO.new
+    io.write("\xDD\x00\x01\x00\x00")
+    0x10000.times { |i|
+      array << i
+      io.write("\xCD") # uint16: i
+      io.write([i].pack("n"))
+    }
+    io.rewind
+    assert_equal(array, @module.unpack(io))
   end
 
   def test_unpack__fixmap

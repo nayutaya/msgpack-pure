@@ -94,6 +94,10 @@ module MessagePackPure::Packer
       io.write("\xDA")
       io.write([value.size].pack("n"))
       io.write(value)
+    when (0x00000000..0xFFFFFFFF)
+      io.write("\xDB")
+      io.write([value.size].pack("N"))
+      io.write(value)
     else
       raise("invalid length")
     end

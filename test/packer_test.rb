@@ -97,7 +97,9 @@ class PackerTest < Test::Unit::TestCase
   end
 
   def test_pack__raw32
-    # TODO;
+    assert_equal(
+      "\xDB\x00\x01\x00\x00" + "A" * 0x00010000,
+      @module.pack(sio, "A" * 0x00010000).string)
   end
 
   private

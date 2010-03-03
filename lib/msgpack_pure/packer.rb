@@ -21,16 +21,27 @@ module MessagePackPure::Packer
 
   def self.pack_integer(io, num)
     case num
-    when (-32..127)
+    when (-0x20..0x7F)
       io.write([num].pack("C"))
     when (0x00..0xFF)
       io.write("\xCC")
       io.write([num].pack("C"))
+    when (-0x80..0x7F)
+      io.write("\xD0")
+      io.write([num].pack("c"))
     when (0x0000..0xFFFF)
       io.write("\xCD")
       io.write([num].pack("n"))
+    when (-0x8000..0x7FFF)
+      io.write("\xD1")
+      num += (2 ** 16) if num < 0
+      io.write([num].pack("n"))
     when (0x00000000..0xFFFFFFFF)
       io.write("\xCE")
+      io.write([num].pack("N"))
+    when (-0x80000000..0x7FFFFFFF)
+      io.write("\xD2")
+      num += (2 ** 32) if num < 0
       io.write([num].pack("N"))
     when (0x0000000000000000..0xFFFFFFFFFFFFFFFF)
       high = (num >> 32)

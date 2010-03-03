@@ -41,6 +41,12 @@ module MessagePackPure::Unpacker
       return (hi << 32) | lo
     when 0xD0 # int8
       return io.read(1).unpack("c")[0]
+    when 0xDA # raw16
+      size = io.read(2).unpack("n")[0]
+      return io.read(size)
+    when 0xDB # raw32
+      size = io.read(4).unpack("N")[0]
+      return io.read(size)
     else
       raise("Unknown Type -- #{'0x%02X' % type}")
     end

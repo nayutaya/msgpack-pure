@@ -55,6 +55,8 @@ module MessagePackPure::Unpacker
       return io.read(1).unpack("c")[0]
     when 0xD1 # int16
       return [io.read(2).unpack("n")[0]].pack("S").unpack("s")[0]
+    when 0xD2 # int32
+      return [io.read(4).unpack("N")[0]].pack("L").unpack("l")[0]
     when 0xDA # raw16
       size = io.read(2).unpack("n")[0]
       return io.read(size)

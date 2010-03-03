@@ -121,8 +121,7 @@ class UnpackerTest < Test::Unit::TestCase
     assert_equal([],        unpack("\x90"))
     assert_equal([0, 1, 2], unpack("\x93\x00\x01\x02"))
 
-    io = StringIO.new
-    io.write("\x9F")
+    io = StringIO.new("\x9F", "a+")
     array = 15.times.map { |i|
       io.write("\xCD") # uint16: i
       io.write([i].pack("n"))
@@ -136,8 +135,7 @@ class UnpackerTest < Test::Unit::TestCase
     assert_equal([],        unpack("\xDC\x00\x00"))
     assert_equal([0, 1, 2], unpack("\xDC\x00\x03\x00\x01\x02"))
 
-    io = StringIO.new
-    io.write("\xDC\xFF\xFF")
+    io = StringIO.new("\xDC\xFF\xFF", "a+")
     array = 0xFFFF.times.map { |i|
       io.write("\xCD") # uint16: i
       io.write([i].pack("n"))
@@ -151,8 +149,7 @@ class UnpackerTest < Test::Unit::TestCase
     assert_equal([],        unpack("\xDD\x00\x00\x00\x00"))
     assert_equal([0, 1, 2], unpack("\xDD\x00\x00\x00\x03\x00\x01\x02"))
 
-    io = StringIO.new
-    io.write("\xDD\x00\x01\x00\x00")
+    io = StringIO.new("\xDD\x00\x01\x00\x00", "a+")
     array = 0x10000.times.map { |i|
       io.write("\xCD") # uint16: i
       io.write([i].pack("n"))
@@ -168,8 +165,7 @@ class UnpackerTest < Test::Unit::TestCase
       {0 => 1, 2 => 3},
       unpack("\x82\x00\x01\x02\x03"))
 
-    io = StringIO.new
-    io.write("\x8F")
+    io = StringIO.new("\x8F", "a+")
     hash = 15.times.inject({}) { |memo, i|
       io.write("\xCD") # uint16: i
       io.write([i].pack("n"))
@@ -187,8 +183,7 @@ class UnpackerTest < Test::Unit::TestCase
       {0 => 1, 2 => 3},
       unpack("\xDE\x00\x02\x00\x01\x02\x03"))
 
-    io = StringIO.new
-    io.write("\xDE\xFF\xFF")
+    io = StringIO.new("\xDE\xFF\xFF", "a+")
     hash = 0xFFFF.times.inject({}) { |memo, i|
       io.write("\xCD") # uint16: i
       io.write([i].pack("n"))
@@ -206,8 +201,7 @@ class UnpackerTest < Test::Unit::TestCase
       {0 => 1, 2 => 3},
       unpack("\xDF\x00\x00\x00\x02\x00\x01\x02\x03"))
 
-    io = StringIO.new
-    io.write("\xDF\x00\x01\x00\x00")
+    io = StringIO.new("\xDF\x00\x01\x00\x00", "a+")
     hash = 0x10000.times.inject({}) { |memo, i|
       io.write("\xCD") # uint16: i
       io.write([i].pack("n"))
@@ -222,6 +216,6 @@ class UnpackerTest < Test::Unit::TestCase
   private
 
   def unpack(binary)
-    return @module.unpack(StringIO.new(binary))
+    return @module.unpack(StringIO.new(binary, "r"))
   end
 end

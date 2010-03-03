@@ -36,6 +36,11 @@ class PackerTest < Test::Unit::TestCase
     assert_equal("\xCE\xFF\xFF\xFF\xFF", @module.pack(sio, 0xFFFFFFFF).string)
   end
 
+  def test_pack__uint64
+    assert_equal("\xCF\x00\x00\x00\x01\x00\x00\x00\x00", @module.pack(sio, 0x0000000100000000).string)
+    assert_equal("\xCF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF", @module.pack(sio, 0xFFFFFFFFFFFFFFFF).string)
+  end
+
   def test_pack__nil
     assert_equal("\xC0", @module.pack(sio, nil).string)
   end

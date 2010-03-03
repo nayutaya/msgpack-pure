@@ -11,17 +11,18 @@ module MessagePackPure::Unpacker
   def self.unpack(io)
     type = io.read(1).unpack("C")[0]
 
-    if (type & 0b10000000) == 0b00000000 # positive fixnum
+    case
+    when (type & 0b10000000) == 0b00000000 # positive fixnum
       return type
-    elsif (type & 0b11100000) == 0b11100000 # negative fixnum
-      return (type & 0b00011111) - 32
-    elsif (type & 0b11100000) == 0b10100000 # fixraw
+    when (type & 0b11100000) == 0b11100000 # negative fixnum
+      return (type & 0b00011111) - (2 ** 5)
+    when (type & 0b11100000) == 0b10100000 # fixraw
       size = (type & 0b00011111)
       return io.read(size)
-    elsif (type & 0b11110000) == 0b10010000 # fixarray
+    when (type & 0b11110000) == 0b10010000 # fixarray
       size = (type & 0b00001111)
       return self.unpack_array(io, size)
-    elsif (type & 0b11110000) == 0b10000000 # fixmap
+    when (type & 0b11110000) == 0b10000000 # fixmap
       size = (type & 0b00001111)
       return self.unpack_hash(io, size)
     end

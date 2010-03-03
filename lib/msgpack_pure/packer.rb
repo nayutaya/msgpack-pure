@@ -11,10 +11,11 @@ end
 module MessagePackPure::Packer
   def self.pack(io, value)
     case value
+    when Integer    then self.pack_integer(io, value)
     when NilClass   then self.pack_nil(io)
     when TrueClass  then self.pack_true(io)
     when FalseClass then self.pack_false(io)
-    when Integer    then self.pack_integer(io, value)
+    when Float      then self.pack_float(io, value)
     end
     return io
   end
@@ -74,6 +75,12 @@ module MessagePackPure::Packer
 
   def self.pack_false(io)
     io.write("\xC2")
+    return io
+  end
+
+  def self.pack_float(io, value)
+    io.write("\xCB")
+    io.write([value].pack("G"))
     return io
   end
 end

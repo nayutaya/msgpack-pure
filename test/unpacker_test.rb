@@ -59,7 +59,10 @@ class UnpackerTest < Test::Unit::TestCase
   end
 
   def test_int64
-    # TODO:
+    assert_equal(0,           @module.unpack(StringIO.new("\xD3\x00\x00\x00\x00\x00\x00\x00\x00")))
+    assert_equal(2 ** 63 - 1, @module.unpack(StringIO.new("\xD3\x7F\xFF\xFF\xFF\xFF\xFF\xFF\xFF")))
+    assert_equal(-1,          @module.unpack(StringIO.new("\xD3\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF")))
+    assert_equal(-(2 ** 63),  @module.unpack(StringIO.new("\xD3\x80\x00\x00\x00\x00\x00\x00\x00")))
   end
 
   def test_nil

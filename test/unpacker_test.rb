@@ -2,6 +2,7 @@
 # coding: utf-8
 
 require "test_helper"
+require "stringio"
 require "msgpack_pure/unpacker"
 
 class UnpackerTest < Test::Unit::TestCase

@@ -3,8 +3,6 @@
 # MessagePack format specification
 # http://msgpack.sourceforge.jp/spec
 
-require "stringio"
-
 module MessagePackPure
   module Unpacker
   end

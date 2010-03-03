@@ -52,23 +52,15 @@ module MessagePackPure::Packer
     when (-0x80000000..0x7FFFFFFF)
       # int32
       io.write("\xD2")
-      num += (2 ** 32) if num < 0
-      io.write(self.pack_uint32(num))
+      io.write(self.pack_int32(num))
     when (0x0000000000000000..0xFFFFFFFFFFFFFFFF)
       # uint64
-      high = (num >> 32)
-      low  = (num & 0xFFFFFFFF)
       io.write("\xCF")
-      io.write(self.pack_uint32(high))
-      io.write(self.pack_uint32(low))
+      io.write(self.pack_uint64(num))
     when (-0x8000000000000000..0x7FFFFFFFFFFFFFFF)
       # int64
-      num += (2 ** 64) if num < 0
-      high = (num >> 32)
-      low  = (num & 0xFFFFFFFF)
       io.write("\xD3")
-      io.write(self.pack_uint32(high))
-      io.write(self.pack_uint32(low))
+      io.write(self.pack_int64(num))
     else
       raise("invalid integer")
     end
@@ -88,7 +80,7 @@ module MessagePackPure::Packer
 
   def self.pack_float(io, value)
     io.write("\xCB")
-    io.write([value].pack("G"))
+    io.write(self.pack_double(value))
   end
 
   def self.pack_string(io, value)
@@ -176,5 +168,25 @@ module MessagePackPure::Packer
 
   def self.pack_uint32(value)
     return [value].pack("N")
+  end
+
+  def self.pack_int32(value)
+    value += (2 ** 32) if value < 0
+    return self.pack_uint32(value)
+  end
+
+  def self.pack_uint64(value)
+    high = (value >> 32)
+    low  = (value & 0xFFFFFFFF)
+    return self.pack_uint32(high) + self.pack_uint32(low)
+  end
+
+  def self.pack_int64(value)
+    value += (2 ** 64) if value < 0
+    return self.pack_uint64(value)
+  end
+
+  def self.pack_double(value)
+    return [value].pack("G")
   end
 end

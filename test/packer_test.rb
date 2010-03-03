@@ -88,7 +88,12 @@ class PackerTest < Test::Unit::TestCase
   end
 
   def test_pack__raw16
-    # TODO;
+    assert_equal(
+      "\xDA\x00\x20" + "A" * 0x0020,
+      @module.pack(sio, "A" * 0x0020).string)
+    assert_equal(
+      "\xDA\xFF\xFF" + "A" * 0xFFFF,
+      @module.pack(sio, "A" * 0xFFFF).string)
   end
 
   def test_pack__raw32

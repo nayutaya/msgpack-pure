@@ -86,7 +86,16 @@ module MessagePackPure::Packer
   end
 
   def self.pack_string(io, value)
-    io.write([0b10100000 + value.size].pack("C"))
-    io.write(value)
+    case value.size
+    when (0x00..0x1F)
+      io.write([0b10100000 + value.size].pack("C"))
+      io.write(value)
+    when (0x0000..0xFFFF)
+      io.write("\xDA")
+      io.write([value.size].pack("n"))
+      io.write(value)
+    else
+      raise("invalid length")
+    end
   end
 end

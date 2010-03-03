@@ -27,34 +27,43 @@ module MessagePackPure::Packer
   def self.pack_integer(io, num)
     case num
     when (-0x20..0x7F)
+      # positive fixnum, negative fixnum
       io.write([num].pack("C"))
     when (0x00..0xFF)
+      # uint8
       io.write("\xCC")
       io.write([num].pack("C"))
     when (-0x80..0x7F)
+      # int8
       io.write("\xD0")
       io.write([num].pack("c"))
     when (0x0000..0xFFFF)
+      # uint16
       io.write("\xCD")
       io.write([num].pack("n"))
     when (-0x8000..0x7FFF)
+      # int16
       io.write("\xD1")
       num += (2 ** 16) if num < 0
       io.write([num].pack("n"))
     when (0x00000000..0xFFFFFFFF)
+      # uint32
       io.write("\xCE")
       io.write([num].pack("N"))
     when (-0x80000000..0x7FFFFFFF)
+      # int32
       io.write("\xD2")
       num += (2 ** 32) if num < 0
       io.write([num].pack("N"))
     when (0x0000000000000000..0xFFFFFFFFFFFFFFFF)
+      # uint64
       high = (num >> 32)
       low  = (num & 0xFFFFFFFF)
       io.write("\xCF")
       io.write([high].pack("N"))
       io.write([low].pack("N"))
     when (-0x8000000000000000..0x7FFFFFFFFFFFFFFF)
+      # int64
       num += (2 ** 64) if num < 0
       high = (num >> 32)
       low  = (num & 0xFFFFFFFF)
@@ -86,13 +95,16 @@ module MessagePackPure::Packer
   def self.pack_string(io, value)
     case value.size
     when (0x00..0x1F)
+      # fixraw
       io.write([0b10100000 + value.size].pack("C"))
       io.write(value)
     when (0x0000..0xFFFF)
+      # raw16
       io.write("\xDA")
       io.write([value.size].pack("n"))
       io.write(value)
     when (0x00000000..0xFFFFFFFF)
+      # raw32
       io.write("\xDB")
       io.write([value.size].pack("N"))
       io.write(value)
@@ -104,13 +116,16 @@ module MessagePackPure::Packer
   def self.pack_array(io, value)
     case value.size
     when (0x00..0x0F)
+      # fixarray
       io.write([0b10010000 + value.size].pack("C"))
       value.each { |item| self.pack(io, item) }
     when (0x0000..0xFFFF)
+      # array16
       io.write("\xDC")
       io.write([value.size].pack("n"))
       value.each { |item| self.pack(io, item) }
     when (0x00000000..0xFFFFFFFF)
+      # array32
       io.write("\xDD")
       io.write([value.size].pack("N"))
       value.each { |item| self.pack(io, item) }
@@ -120,12 +135,14 @@ module MessagePackPure::Packer
   def self.pack_hash(io, value)
     case value.size
     when (0x00..0x0F)
+      # fixmap
       io.write([0b10000000 + value.size].pack("C"))
       value.sort_by { |key, value| key }.each { |key, value|
         self.pack(io, key)
         self.pack(io, value)
       }
     when (0x0000..0xFFFF)
+      # map16
       io.write("\xDE")
       io.write([value.size].pack("n"))
       value.sort_by { |key, value| key }.each { |key, value|
@@ -133,6 +150,7 @@ module MessagePackPure::Packer
         self.pack(io, value)
       }
     when (0x00000000..0xFFFFFFFF)
+      # map32
       io.write("\xDF")
       io.write([value.size].pack("N"))
       value.sort_by { |key, value| key }.each { |key, value|

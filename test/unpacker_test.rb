@@ -139,29 +139,42 @@ class UnpackerTest < Test::Unit::TestCase
   end
 
   def test_fixmap
-    assert_equal({}, @module.unpack(StringIO.new("\x80")))
-    assert_equal({0 => 0}, @module.unpack(StringIO.new("\x81\x00\x00")))
+    assert_equal({},       @module.unpack(StringIO.new("\x80")))
+    assert_equal({0 => 1}, @module.unpack(StringIO.new("\x81\x00\x01")))
   end
 
   def test_map16
     assert_equal({},       @module.unpack(StringIO.new("\xDE\x00\x00")))
     assert_equal({0 => 1}, @module.unpack(StringIO.new("\xDE\x00\x01\x00\x01")))
 
-=begin
     hash = {}
-    bin  = "\xDE\xFF\xFF"
-    (2 ** 16).times { |i|
+    io   = StringIO.new
+    io.write("\xDE\xFF\xFF")
+    (2 ** 16 - 1).times { |i|
       hash[i] = 0
-      bin += "\xCD" + [i].pack("n")
-      bin += "\x00"
+      io.write("\xCD") # uint16: i
+      io.write([i].pack("n"))
+      io.write("\x00") # fixnum: 0
     }
-    assert_equal(hash, @module.unpack(StringIO.new(bin)))
-=end
+    io.rewind
+    assert_equal(hash, @module.unpack(io))
   end
 
   def test_map32
     assert_equal({},       @module.unpack(StringIO.new("\xDF\x00\x00\x00\x00")))
     assert_equal({0 => 1}, @module.unpack(StringIO.new("\xDF\x00\x00\x00\x01\x00\x01")))
+
+    hash = {}
+    io   = StringIO.new
+    io.write("\xDF\x00\x01\x00\x00")
+    (2 ** 16).times { |i|
+      hash[i] = 0
+      io.write("\xCD") # uint16: i
+      io.write([i].pack("n"))
+      io.write("\x00") # fixnum: 0
+    }
+    io.rewind
+    assert_equal(hash, @module.unpack(io))
   end
 
   def test_ok

@@ -27,79 +27,77 @@ module MessagePackPure::Packer
   def self.pack_integer(io, num)
     case num
     when (-0x20..0x7F)
-      io.write([num].pack("C"))
+      # positive fixnum, negative fixnum
+      io.write(self.pack_int8(num))
     when (0x00..0xFF)
+      # uint8
       io.write("\xCC")
-      io.write([num].pack("C"))
+      io.write(self.pack_uint8(num))
     when (-0x80..0x7F)
+      # int8
       io.write("\xD0")
-      io.write([num].pack("c"))
+      io.write(self.pack_int8(num))
     when (0x0000..0xFFFF)
+      # uint16
       io.write("\xCD")
-      io.write([num].pack("n"))
+      io.write(self.pack_uint16(num))
     when (-0x8000..0x7FFF)
+      # int16
       io.write("\xD1")
-      num += (2 ** 16) if num < 0
-      io.write([num].pack("n"))
+      io.write(self.pack_int16(num))
     when (0x00000000..0xFFFFFFFF)
+      # uint32
       io.write("\xCE")
-      io.write([num].pack("N"))
+      io.write(self.pack_uint32(num))
     when (-0x80000000..0x7FFFFFFF)
+      # int32
       io.write("\xD2")
-      num += (2 ** 32) if num < 0
-      io.write([num].pack("N"))
+      io.write(self.pack_int32(num))
     when (0x0000000000000000..0xFFFFFFFFFFFFFFFF)
-      high = (num >> 32)
-      low  = (num & 0xFFFFFFFF)
+      # uint64
       io.write("\xCF")
-      io.write([high].pack("N"))
-      io.write([low].pack("N"))
+      io.write(self.pack_uint64(num))
     when (-0x8000000000000000..0x7FFFFFFFFFFFFFFF)
-      num += (2 ** 64) if num < 0
-      high = (num >> 32)
-      low  = (num & 0xFFFFFFFF)
+      # int64
       io.write("\xD3")
-      io.write([high].pack("N"))
-      io.write([low].pack("N"))
+      io.write(self.pack_int64(num))
     else
       raise("invalid integer")
     end
-    return io
   end
 
   def self.pack_nil(io)
     io.write("\xC0")
-    return io
   end
 
   def self.pack_true(io)
     io.write("\xC3")
-    return io
   end
 
   def self.pack_false(io)
     io.write("\xC2")
-    return io
   end
 
   def self.pack_float(io, value)
     io.write("\xCB")
-    io.write([value].pack("G"))
-    return io
+    io.write(self.pack_double(value))
   end
 
   def self.pack_string(io, value)
     case value.size
     when (0x00..0x1F)
-      io.write([0b10100000 + value.size].pack("C"))
+      # fixraw
+      io.write(self.pack_uint8(0b10100000 + value.size))
       io.write(value)
     when (0x0000..0xFFFF)
+      # raw16
       io.write("\xDA")
-      io.write([value.size].pack("n"))
+      io.write(self.pack_uint16(value.size))
       io.write(value)
     when (0x00000000..0xFFFFFFFF)
+      # raw32
       io.write("\xDB")
-      io.write([value.size].pack("N"))
+      io.write(self.pack_uint32(value.size))
       io.write(value)
     else
       raise("invalid length")
@@ -109,41 +107,86 @@ module MessagePackPure::Packer
   def self.pack_array(io, value)
     case value.size
     when (0x00..0x0F)
-      io.write([0b10010000 + value.size].pack("C"))
-      value.each { |item| self.pack(io, item) }
+      # fixarray
+      io.write(self.pack_uint8(0b10010000 + value.size))
     when (0x0000..0xFFFF)
+      # array16
       io.write("\xDC")
-      io.write([value.size].pack("n"))
-      value.each { |item| self.pack(io, item) }
+      io.write(self.pack_uint16(value.size))
     when (0x00000000..0xFFFFFFFF)
+      # array32
       io.write("\xDD")
-      io.write([value.size].pack("N"))
-      value.each { |item| self.pack(io, item) }
+      io.write(self.pack_uint32(value.size))
+    else
+      raise("invalid length")
     end
+
+    value.each { |item|
+      self.pack(io, item)
+    }
   end
 
   def self.pack_hash(io, value)
     case value.size
     when (0x00..0x0F)
-      io.write([0b10000000 + value.size].pack("C"))
-      value.sort_by { |key, value| key }.each { |key, value|
-        self.pack(io, key)
-        self.pack(io, value)
-      }
+      # fixmap
+      io.write(self.pack_uint8(0b10000000 + value.size))
     when (0x0000..0xFFFF)
+      # map16
       io.write("\xDE")
-      io.write([value.size].pack("n"))
-      value.sort_by { |key, value| key }.each { |key, value|
-        self.pack(io, key)
-        self.pack(io, value)
-      }
+      io.write(self.pack_uint16(value.size))
     when (0x00000000..0xFFFFFFFF)
+      # map32
       io.write("\xDF")
-      io.write([value.size].pack("N"))
-      value.sort_by { |key, value| key }.each { |key, value|
-        self.pack(io, key)
-        self.pack(io, value)
-      }
+      io.write(self.pack_uint32(value.size))
+    else
+      raise("invalid length")
     end
+
+    value.sort_by { |key, value| key }.each { |key, value|
+      self.pack(io, key)
+      self.pack(io, value)
+    }
+  end
+
+  def self.pack_uint8(value)
+    return [value].pack("C")
+  end
+
+  def self.pack_int8(value)
+    return [value].pack("c")
+  end
+
+  def self.pack_uint16(value)
+    return [value].pack("n")
+  end
+
+  def self.pack_int16(value)
+    value += (2 ** 16) if value < 0
+    return self.pack_uint16(value)
+  end
+
+  def self.pack_uint32(value)
+    return [value].pack("N")
+  end
+
+  def self.pack_int32(value)
+    value += (2 ** 32) if value < 0
+    return self.pack_uint32(value)
+  end
+
+  def self.pack_uint64(value)
+    high = (value >> 32)
+    low  = (value & 0xFFFFFFFF)
+    return self.pack_uint32(high) + self.pack_uint32(low)
+  end
+
+  def self.pack_int64(value)
+    value += (2 ** 64) if value < 0
+    return self.pack_uint64(value)
+  end
+
+  def self.pack_double(value)
+    return [value].pack("G")
   end
 end

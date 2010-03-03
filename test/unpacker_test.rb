@@ -78,7 +78,9 @@ class UnpackerTest < Test::Unit::TestCase
   end
 
   def test_float
-    # TODO:
+    assert_equal(0.0,  @module.unpack(StringIO.new("\xCA\x00\x00\x00\x00")))
+    assert_equal(0.5,  @module.unpack(StringIO.new("\xCA\x3F\x00\x00\x00")))
+    assert_equal(-0.5, @module.unpack(StringIO.new("\xCA\xBF\x00\x00\x00")))
   end
 
   def test_double

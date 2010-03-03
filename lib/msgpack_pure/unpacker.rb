@@ -39,6 +39,8 @@ module MessagePackPure::Unpacker
       return false
     when 0xC3 # true
       return true
+    when 0xCA # float
+      return io.read(4).unpack("g")[0]
     when 0xCB # double
       return io.read(8).unpack("G")[0]
     when 0xCC # uint8

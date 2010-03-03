@@ -21,6 +21,15 @@ module MessagePackPure::Unpacker
     elsif (type & 0b11110000) == 0b10010000 # fixarray
       size = (type & 0b00001111)
       return size.times.map { unpack(io) }
+    elsif (type & 0b11110000) == 0b10000000 # fixmap
+      size = (type & 0b00001111)
+      hash = {}
+      size.times {
+        key = unpack(io)
+        value = unpack(io)
+        hash[key] = value
+      }
+      return hash
     end
 
     case type

@@ -109,6 +109,11 @@ class UnpackerTest < Test::Unit::TestCase
     assert_equal([0], @module.unpack(StringIO.new("\xDD\x00\x00\x00\x01\x00")))
   end
 
+  def test_fixmap
+    assert_equal({}, @module.unpack(StringIO.new("\x80")))
+    assert_equal({0 => 0}, @module.unpack(StringIO.new("\x81\x00\x00")))
+  end
+
   def test_ok
     assert true
   end

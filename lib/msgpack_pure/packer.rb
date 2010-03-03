@@ -28,15 +28,15 @@ module MessagePackPure::Packer
     case num
     when (-0x20..0x7F)
       # positive fixnum, negative fixnum
-      io.write([num].pack("C"))
+      io.write(self.pack_int8(num))
     when (0x00..0xFF)
       # uint8
       io.write("\xCC")
-      io.write([num].pack("C"))
+      io.write(self.pack_uint8(num))
     when (-0x80..0x7F)
       # int8
       io.write("\xD0")
-      io.write([num].pack("c"))
+      io.write(self.pack_int8(num))
     when (0x0000..0xFFFF)
       # uint16
       io.write("\xCD")
@@ -117,7 +117,7 @@ module MessagePackPure::Packer
     case value.size
     when (0x00..0x0F)
       # fixarray
-      io.write([0b10010000 + value.size].pack("C"))
+      io.write(self.pack_uint8(0b10010000 + value.size))
     when (0x0000..0xFFFF)
       # array16
       io.write("\xDC")
@@ -139,7 +139,7 @@ module MessagePackPure::Packer
     case value.size
     when (0x00..0x0F)
       # fixmap
-      io.write([0b10000000 + value.size].pack("C"))
+      io.write(self.pack_uint8(0b10000000 + value.size))
     when (0x0000..0xFFFF)
       # map16
       io.write("\xDE")
@@ -156,5 +156,13 @@ module MessagePackPure::Packer
       self.pack(io, key)
       self.pack(io, value)
     }
+  end
+
+  def self.pack_uint8(value)
+    return [value].pack("C")
+  end
+
+  def self.pack_int8(value)
+    return [value].pack("c")
   end
 end

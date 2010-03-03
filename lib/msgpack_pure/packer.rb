@@ -130,6 +130,20 @@ module MessagePackPure::Packer
         self.pack(io, key)
         self.pack(io, value)
       }
+    when (0x0000..0xFFFF)
+      io.write("\xDE")
+      io.write([value.size].pack("n"))
+      value.sort_by { |key, value| key }.each { |key, value|
+        self.pack(io, key)
+        self.pack(io, value)
+      }
+    when (0x00000000..0xFFFFFFFF)
+      io.write("\xDF")
+      io.write([value.size].pack("N"))
+      value.sort_by { |key, value| key }.each { |key, value|
+        self.pack(io, key)
+        self.pack(io, value)
+      }
     end
   end
 end

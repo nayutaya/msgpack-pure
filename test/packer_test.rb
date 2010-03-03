@@ -157,12 +157,37 @@ class PackerTest < Test::Unit::TestCase
     assert_equal(io.string, @module.pack(sio, hash).string)
   end
 
-  def test_pack__map16
-    # TODO:
+  def test_pack__map16_min
+    io = StringIO.new("\xDE\x00\x10", "a+")
+    hash = 0x0010.times.inject({}) { |memo, i|
+      @module.pack(io, i)
+      @module.pack(io, 0)
+      memo[i] = 0
+      memo
+    }
+    assert_equal(io.string, @module.pack(sio, hash).string)
   end
 
-  def test_pack__map32
-    # TODO:
+  def test_pack__map16_max
+    io = StringIO.new("\xDE\xFF\xFF", "a+")
+    hash = 0xFFFF.times.inject({}) { |memo, i|
+      @module.pack(io, i)
+      @module.pack(io, 0)
+      memo[i] = 0
+      memo
+    }
+    assert_equal(io.string, @module.pack(sio, hash).string)
+  end
+
+  def test_pack__map32_min
+    io = StringIO.new("\xDF\x00\x01\x00\x00", "a+")
+    hash = 0x00010000.times.inject({}) { |memo, i|
+      @module.pack(io, i)
+      @module.pack(io, 0)
+      memo[i] = 0
+      memo
+    }
+    assert_equal(io.string, @module.pack(sio, hash).string)
   end
 
   private

@@ -14,6 +14,7 @@ module MessagePackPure::Packer
     when NilClass   then self.pack_nil(io)
     when TrueClass  then self.pack_true(io)
     when FalseClass then self.pack_false(io)
+    when Integer    then self.pack_fixnum(io, value)
     end
     return io
   end
@@ -22,10 +23,10 @@ module MessagePackPure::Packer
     case num
     when (-32..127)
       io.write([num].pack("C"))
-    when (0..0xFF)
+    when (0x00..0xFF)
       io.write("\xCC")
       io.write([num].pack("C"))
-    when (0..0xFFFF)
+    when (0x0000..0xFFFF)
       io.write("\xCD")
       io.write([num].pack("n"))
     else

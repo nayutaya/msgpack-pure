@@ -79,6 +79,22 @@ class PackerTest < Test::Unit::TestCase
     assert_equal("\xCB\xBF\xE0\x00\x00\x00\x00\x00\x00", @module.pack(sio, -0.5).string)
   end
 
+  def test_pack__fixraw
+    assert_equal("\xA0",    @module.pack(sio, "").string)
+    assert_equal("\xA3ABC", @module.pack(sio, "ABC").string)
+    assert_equal(
+      "\xBF" + "A" * 31,
+      @module.pack(sio, "A" * 31).string)
+  end
+
+  def test_pack__raw16
+    # TODO;
+  end
+
+  def test_pack__raw32
+    # TODO;
+  end
+
   private
 
   def sio

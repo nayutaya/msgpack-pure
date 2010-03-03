@@ -16,6 +16,7 @@ module MessagePackPure::Packer
     when TrueClass  then self.pack_true(io)
     when FalseClass then self.pack_false(io)
     when Float      then self.pack_float(io, value)
+    when String     then self.pack_string(io, value)
     end
     return io
   end
@@ -82,5 +83,10 @@ module MessagePackPure::Packer
     io.write("\xCB")
     io.write([value].pack("G"))
     return io
+  end
+
+  def self.pack_string(io, value)
+    io.write([0b10100000 + value.size].pack("C"))
+    io.write(value)
   end
 end

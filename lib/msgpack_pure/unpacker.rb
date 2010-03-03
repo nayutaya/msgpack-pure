@@ -36,9 +36,9 @@ module MessagePackPure::Unpacker
     when 0xC3 # true
       return true
     when 0xCA # float
-      return io.read(4).unpack("g")[0]
+      return self.unpack_float(io)
     when 0xCB # double
-      return io.read(8).unpack("G")[0]
+      return self.unpack_double(io)
     when 0xCC # uint8
       return self.unpack_uint8(io)
     when 0xCD # uint16
@@ -48,7 +48,7 @@ module MessagePackPure::Unpacker
     when 0xCF # uint64
       return self.unpack_uint64(io)
     when 0xD0 # int8
-      return io.read(1).unpack("c")[0]
+      return self.unpack_int8(io)
     when 0xD1 # int16
       num = self.unpack_uint16(io)
       return (num < 2 ** 15 ? num : num - (2 ** 16))
@@ -96,6 +96,10 @@ module MessagePackPure::Unpacker
     return io.read(1).unpack("C")[0]
   end
 
+  def self.unpack_int8(io)
+    return io.read(1).unpack("c")[0]
+  end
+
   def self.unpack_uint16(io)
     return io.read(2).unpack("n")[0]
   end
@@ -108,5 +112,13 @@ module MessagePackPure::Unpacker
     high = self.unpack_uint32(io)
     low  = self.unpack_uint32(io)
     return (high << 32) + low
+  end
+
+  def self.unpack_float(io)
+    return io.read(4).unpack("g")[0]
+  end
+
+  def self.unpack_double(io)
+    return io.read(8).unpack("G")[0]
   end
 end

@@ -15,6 +15,10 @@ class MessagePackPure::Unpacker
 
   attr_reader :io
 
+  def read
+    return self.class.read(@io)
+  end
+
   def self.read(io)
     type = self.unpack_uint8(io)
 

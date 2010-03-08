@@ -217,6 +217,6 @@ class UnpackerTest < Test::Unit::TestCase
   private
 
   def read(binary)
-    return @module.read(StringIO.new(binary, "r"))
+    return @klass.new(StringIO.new(binary, "r")).read
   end
 end

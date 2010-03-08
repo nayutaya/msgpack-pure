@@ -7,12 +7,14 @@ require "msgpack_pure/unpacker"
 module MessagePackPure
   def self.pack(value)
     io = StringIO.new
-    Packer.write(io, value)
+    packer = Packer.new(io)
+    packer.write(value)
     return io.string
   end
 
   def self.unpack(binary)
     io = StringIO.new(binary, "r")
-    return Unpacker.read(io)
+    unpacker = Unpacker.new(io)
+    return unpacker.read
   end
 end

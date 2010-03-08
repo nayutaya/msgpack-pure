@@ -7,7 +7,13 @@ require "msgpack_pure/unpacker"
 
 class UnpackerTest < Test::Unit::TestCase
   def setup
-    @module = MessagePackPure::Unpacker
+    @klass = MessagePackPure::Unpacker
+  end
+
+  def test_initialize
+    io       = StringIO.new
+    unpacker = @klass.new(io)
+    assert_same(io, unpacker.io)
   end
 
   def test_read__positive_fixnum
@@ -127,7 +133,7 @@ class UnpackerTest < Test::Unit::TestCase
       i
     }
     io.rewind
-    assert_equal(array, @module.read(io))
+    assert_equal(array, @klass.new(io).read)
   end
 
   def test_read__array16
@@ -140,7 +146,7 @@ class UnpackerTest < Test::Unit::TestCase
       i
     }
     io.rewind
-    assert_equal(array, @module.read(io))
+    assert_equal(array, @klass.new(io).read)
   end
 
   def test_read__array32
@@ -153,7 +159,7 @@ class UnpackerTest < Test::Unit::TestCase
       i
     }
     io.rewind
-    assert_equal(array, @module.read(io))
+    assert_equal(array, @klass.new(io).read)
   end
 
   def test_read__fixmap
@@ -170,7 +176,7 @@ class UnpackerTest < Test::Unit::TestCase
       memo
     }
     io.rewind
-    assert_equal(hash, @module.read(io))
+    assert_equal(hash, @klass.new(io).read)
   end
 
   def test_read__map16
@@ -187,7 +193,7 @@ class UnpackerTest < Test::Unit::TestCase
       memo
     }
     io.rewind
-    assert_equal(hash, @module.read(io))
+    assert_equal(hash, @klass.new(io).read)
   end
 
   def test_read__map32
@@ -204,12 +210,12 @@ class UnpackerTest < Test::Unit::TestCase
       memo
     }
     io.rewind
-    assert_equal(hash, @module.read(io))
+    assert_equal(hash, @klass.new(io).read)
   end
 
   private
 
   def read(binary)
-    return @module.read(StringIO.new(binary, "r"))
+    return @klass.new(StringIO.new(binary, "r")).read
   end
 end

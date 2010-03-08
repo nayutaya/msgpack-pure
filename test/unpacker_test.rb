@@ -7,7 +7,14 @@ require "msgpack_pure/unpacker"
 
 class UnpackerTest < Test::Unit::TestCase
   def setup
+    @klass = MessagePackPure::Unpacker
     @module = MessagePackPure::Unpacker
+  end
+
+  def test_initialize
+    io       = StringIO.new
+    unpacker = @klass.new(io)
+    assert_same(io, unpacker.io)
   end
 
   def test_read__positive_fixnum

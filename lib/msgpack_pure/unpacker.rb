@@ -4,11 +4,17 @@
 # http://msgpack.sourceforge.jp/spec
 
 module MessagePackPure
-  module Unpacker
+  class Unpacker
   end
 end
 
-module MessagePackPure::Unpacker
+class MessagePackPure::Unpacker
+  def initialize(io)
+    @io = io
+  end
+
+  attr_reader :io
+
   def self.read(io)
     type = self.unpack_uint8(io)
 

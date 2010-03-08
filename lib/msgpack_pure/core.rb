@@ -7,7 +7,8 @@ require "msgpack_pure/unpacker"
 module MessagePackPure
   def self.pack(value)
     io = StringIO.new
-    Packer.write(io, value)
+    packer = Packer.new(io)
+    packer.write(value)
     return io.string
   end
 

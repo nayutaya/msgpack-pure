@@ -112,39 +112,39 @@ class PackerTest < Test::Unit::TestCase
     assert_equal("\x90",             @klass.new(sio).write([]).string)
     assert_equal("\x93\x00\x01\x02", @klass.new(sio).write([0, 1, 2]).string)
 
-    io = StringIO.new("\x9F", "a+")
+    packer = @klass.new(StringIO.new("\x9F", "a+"))
     array = 0x0F.times.map { |i|
-      @klass.write(io, i)
+      packer.write(i)
       i
     }
-    assert_equal(io.string, @klass.new(sio).write(array).string)
+    assert_equal(packer.io.string, @klass.new(sio).write(array).string)
   end
 
   def test_write__array16_min
-    io = StringIO.new("\xDC\x00\x10", "a+")
+    packer = @klass.new(StringIO.new("\xDC\x00\x10", "a+"))
     array = 0x0010.times.map { |i|
-      @klass.write(io, i)
+      packer.write(i)
       i
     }
-    assert_equal(io.string, @klass.new(sio).write(array).string)
+    assert_equal(packer.io.string, @klass.new(sio).write(array).string)
   end
 
   def test_write__array16_max
-    io = StringIO.new("\xDC\xFF\xFF", "a+")
+    packer = @klass.new(StringIO.new("\xDC\xFF\xFF", "a+"))
     array = 0xFFFF.times.map { |i|
-      @klass.write(io, i)
+      packer.write(i)
       i
     }
-    assert_equal(io.string, @klass.new(sio).write(array).string)
+    assert_equal(packer.io.string, @klass.new(sio).write(array).string)
   end
 
   def test_write__array32_min
-    io = StringIO.new("\xDD\x00\x01\x00\x00", "a+")
+    packer = @klass.new(StringIO.new("\xDD\x00\x01\x00\x00", "a+"))
     array = 0x00010000.times.map { |i|
-      @klass.write(io, i)
+      packer.write(i)
       i
     }
-    assert_equal(io.string, @klass.new(sio).write(array).string)
+    assert_equal(packer.io.string, @klass.new(sio).write(array).string)
   end
 
   def test_write__fixmap
@@ -153,47 +153,47 @@ class PackerTest < Test::Unit::TestCase
       "\x82\x00\x01\x02\x03",
       @klass.new(sio).write({0 => 1, 2 => 3}).string)
 
-    io = StringIO.new("\x8F", "a+")
+    packer = @klass.new(StringIO.new("\x8F", "a+"))
     hash = 0x0F.times.inject({}) { |memo, i|
-      @klass.write(io, i)
-      @klass.write(io, 0)
+      packer.write(i)
+      packer.write(0)
       memo[i] = 0
       memo
     }
-    assert_equal(io.string, @klass.new(sio).write(hash).string)
+    assert_equal(packer.io.string, @klass.new(sio).write(hash).string)
   end
 
   def test_write__map16_min
-    io = StringIO.new("\xDE\x00\x10", "a+")
+    packer = @klass.new(StringIO.new("\xDE\x00\x10", "a+"))
     hash = 0x0010.times.inject({}) { |memo, i|
-      @klass.write(io, i)
-      @klass.write(io, 0)
+      packer.write(i)
+      packer.write(0)
       memo[i] = 0
       memo
     }
-    assert_equal(io.string, @klass.new(sio).write(hash).string)
+    assert_equal(packer.io.string, @klass.new(sio).write(hash).string)
   end
 
   def test_write__map16_max
-    io = StringIO.new("\xDE\xFF\xFF", "a+")
+    packer = @klass.new(StringIO.new("\xDE\xFF\xFF", "a+"))
     hash = 0xFFFF.times.inject({}) { |memo, i|
-      @klass.write(io, i)
-      @klass.write(io, 0)
+      packer.write(i)
+      packer.write(0)
       memo[i] = 0
       memo
     }
-    assert_equal(io.string, @klass.new(sio).write(hash).string)
+    assert_equal(packer.io.string, @klass.new(sio).write(hash).string)
   end
 
   def test_write__map32_min
-    io = StringIO.new("\xDF\x00\x01\x00\x00", "a+")
+    packer = @klass.new(StringIO.new("\xDF\x00\x01\x00\x00", "a+"))
     hash = 0x00010000.times.inject({}) { |memo, i|
-      @klass.write(io, i)
-      @klass.write(io, 0)
+      packer.write(i)
+      packer.write(0)
       memo[i] = 0
       memo
     }
-    assert_equal(io.string, @klass.new(sio).write(hash).string)
+    assert_equal(packer.io.string, @klass.new(sio).write(hash).string)
   end
 
   private

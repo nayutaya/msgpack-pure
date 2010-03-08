@@ -15,12 +15,6 @@ class MessagePackPure::Packer
 
   attr_reader :io
 
-  def self.write(io, value)
-    packer = self.new(io)
-    packer.write(value)
-    return io
-  end
-
   def write(value)
     case value
     when Integer    then self.write_integer(value)

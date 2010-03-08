@@ -16,18 +16,25 @@ class MessagePackPure::Packer
   attr_reader :io
 
   def self.write(io, value)
+    packer = self.new(io)
+    packer.write(value)
+    return io
+  end
+
+  def write(value)
     case value
-    when Integer    then self.write_integer(io, value)
-    when NilClass   then self.write_nil(io)
-    when TrueClass  then self.write_true(io)
-    when FalseClass then self.write_false(io)
-    when Float      then self.write_float(io, value)
-    when String     then self.write_string(io, value)
-    when Array      then self.write_array(io, value)
-    when Hash       then self.write_hash(io, value)
+    when Integer    then self.class.write_integer(@io, value)
+    when NilClass   then self.class.write_nil(@io)
+    when TrueClass  then self.class.write_true(@io)
+    when FalseClass then self.class.write_false(@io)
+    when Float      then self.class.write_float(@io, value)
+    when String     then self.class.write_string(@io, value)
+    when Array      then self.class.write_array(@io, value)
+    when Hash       then self.class.write_hash(@io, value)
     else raise("unknown type")
     end
-    return io
+
+    return @io
   end
 
   def self.write_integer(io, num)

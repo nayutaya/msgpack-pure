@@ -14,6 +14,7 @@ module MessagePackPure
 
   def self.unpack(binary)
     io = StringIO.new(binary, "r")
-    return Unpacker.read(io)
+    unpacker = Unpacker.new(io)
+    return unpacker.read
   end
 end

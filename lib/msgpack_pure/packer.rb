@@ -37,6 +37,8 @@ class MessagePackPure::Packer
     return @io
   end
 
+  protected
+
   def write_integer(num)
     case num
     when (-0x20..0x7F)

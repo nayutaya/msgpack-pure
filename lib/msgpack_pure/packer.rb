@@ -4,11 +4,17 @@
 # http://msgpack.sourceforge.jp/spec
 
 module MessagePackPure
-  module Packer
+  class Packer
   end
 end
 
-module MessagePackPure::Packer
+class MessagePackPure::Packer
+  def initialize(io)
+    @io = io
+  end
+
+  attr_reader :io
+
   def self.write(io, value)
     case value
     when Integer    then self.write_integer(io, value)

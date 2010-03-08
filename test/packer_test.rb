@@ -7,7 +7,14 @@ require "msgpack_pure/packer"
 
 class PackerTest < Test::Unit::TestCase
   def setup
+    @klass = MessagePackPure::Packer
     @module = MessagePackPure::Packer
+  end
+
+  def test_initialize
+    io     = StringIO.new
+    packer = @klass.new(io)
+    assert_same(io, packer.io)
   end
 
   def test_write__positive_fixnum

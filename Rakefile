@@ -13,7 +13,7 @@ Rake::TestTask.new do |test|
 end
 
 desc "bump version"
-task :version do
+task :bump do
   cur_version  = MessagePackPure::VERSION
   next_version = cur_version.succ
   puts("#{cur_version} -> #{next_version}")

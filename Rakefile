@@ -45,3 +45,14 @@ task :gemspec do
     file.write(erb.result(binding))
   }
 end
+
+desc "build gem"
+task :build do
+  sh "gem build #{NAME}.gemspec"
+end
+
+desc "push gem"
+task :push do
+  target = "#{NAME}-#{MessagePackPure::VERSION}.gem"
+  sh "gem push #{target}"
+end
